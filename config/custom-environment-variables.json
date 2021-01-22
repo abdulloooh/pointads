@@ -1,0 +1,7 @@
+{
+  "jwt": "jwt",
+  "db": "db",
+  "SENDGRID_API_KEY": "SENDGRID_API_KEY",
+  "mailFrom": "mailFrom",
+  "mailName": "mailName"
+}
