@@ -2,6 +2,7 @@ const app = require("express")();
 const path = require('path');
 const cors = require("cors");
 const config = require("config");
+
 module.exports = function () {
   app.set("views", path.join(`${__dirname}/../`, "views"));
   app.set("view engine", "jade");

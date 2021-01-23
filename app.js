@@ -1,7 +1,7 @@
 const app = require("express")();
 
 require("./startup/prod")();
-// require("./startup/errorHandler")(debug, winston);
+require("./startup/error_handler")();
 require("./startup/config")();
 require("./startup/db")();
 require("./startup/routes")();
