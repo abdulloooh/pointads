@@ -48,6 +48,12 @@ userSchema.methods.generateJwtToken = function () {
   );
 };
 
+userSchema.methods.dummyAvatar = function () {
+  return "https://www.gravatar.com/avatar/" + crypto.createHash("md5")
+    .update(this.email)
+    .digest("hex") + "?d=robohash"
+}
+
 // userSchema.methods.generatePasswordReset = function () {
 //   this.resetPasswordToken = crypto.randomBytes(20).toString("hex");
 //   this.resetPasswordExpires = Date.now() + 900000; //expires in 15 minutes
