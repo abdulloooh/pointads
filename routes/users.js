@@ -1,9 +1,9 @@
 const express = require('express');
 const router = express.Router();
 const passport = require("passport")
-const { hash, verify } = require("argon2")
+const { hash } = require("argon2")
 const sendMail = require("../config/nodemailer")
-const { User, validateLogin, validateSignup, error400, encrypt, decrypt } = require("../models/user")
+const { User, validateSignup, error400, encrypt, decrypt } = require("../models/user")
 
 router.get('/me', passport.authenticate('jwt', { session: false }), (req, res,) => {
   res.send({ user: req.user.transformUserEntity() });
@@ -83,9 +83,6 @@ router.post("/create", async (req, res, next) => {
   res.send({ user: user.transformUserEntity(), token: user.generateJwtToken() });
 })
 
-router.post("/login", passport.authenticate('local', { session: false }), ({ user }, res) => {
-  return res.send({ user: user.transformUserEntity(), token: user.generateJwtToken() })
-})
 
 function checkUser(res, user, db_user) {
   if (user.username.toLowerCase() === db_user.username) return error400(res,
@@ -111,3 +108,6 @@ function checkUser(res, user, db_user) {
 }
 
 module.exports = router;
+
+
+// http://www.passportjs.org/docs/google/

@@ -6,6 +6,8 @@ const logger = require("morgan");
 const asyncError = require("../middlewares/async_error");
 
 const indexRouter = require("../routes/index");
+const userRouter = require("../routes/users")
+const authRouter = require("../routes/auth")
 
 module.exports = function (app) {
   app.use(logger("dev"));
@@ -16,7 +18,8 @@ module.exports = function (app) {
 
   app.use("/", indexRouter);
   app.use("/api", indexRouter);
-  app.use("/api/users", require("../routes/users"))
+  app.use("/api/users", userRouter)
+  app.use("/api/auth", authRouter)
 
 
   app.use(asyncError);

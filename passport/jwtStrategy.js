@@ -1,15 +1,16 @@
 const config = require("config");
 const passport = require("passport")
+const { User } = require("../models/user")
 
 module.exports = function () {
     const JwtStrategy = require('passport-jwt').Strategy,
         ExtractJwt = require('passport-jwt').ExtractJwt;
 
-    const opts = {}
-    opts.jwtFromRequest = ExtractJwt.fromAuthHeaderAsBearerToken();
-    opts.secretOrKey = config.get('jwt');
-    // opts.issuer = 'accounts.examplesoft.com';
-    // opts.audience = 'yoursite.net';
+    const opts = {
+        jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+        secretOrKey: config.get('jwt')
+    }
+
     passport.use(new JwtStrategy(opts, function (jwt_payload, done) {
         User.findById(jwt_payload._id, function (err, user) {
             if (err) {
@@ -23,3 +24,5 @@ module.exports = function () {
         });
     }));
 }
+
+// http://www.passportjs.org/packages/passport-jwt/

@@ -27,3 +27,7 @@ module.exports = function () {
         }
     ));
 }
+
+
+// http://www.passportjs.org/docs/
+// https://medium.com/javascript-in-plain-english/authentication-using-passport-js-in-a-node-js-backend-api-51e9946549cb
