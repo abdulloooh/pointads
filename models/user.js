@@ -1,3 +1,4 @@
+const _ = require("lodash")
 const Joi = require("@hapi/joi");
 const mongoose = require("mongoose");
 const jwt = require("jsonwebtoken");
@@ -11,6 +12,8 @@ const key = config.get("AES_KEY")
 
 // Defining iv 
 const iv = config.get("AES_IV")
+
+const public_fields = ["username", "phone_number", "email", "avatar", "wallet"]
 
 const userSchema = new mongoose.Schema({
   username: {
@@ -69,6 +72,11 @@ userSchema.methods.dummyAvatar = function () {
   return "https://www.gravatar.com/avatar/" + crypto.createHash("md5")
     .update(this.email)
     .digest("hex") + "?d=robohash"
+}
+
+
+userSchema.methods.transformUserEntity = function () {
+  return _.pick(this, public_fields)
 }
 
 // userSchema.methods.generatePasswordReset = function () {

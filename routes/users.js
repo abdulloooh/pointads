@@ -15,31 +15,31 @@ router.post("/register", async (req, res, next) => {
     field: error.details[0].path[0], msg: error.details[0].message
   });
 
-  let user = await User.findOne({
+  let db_user = await User.findOne({
     $or: [{ username }, { email }, { phone_number }],
   });
 
-  // NEW USER
+  // USER EXISTS
+  if (db_user) return checkUser(res, req.body, db_user)
 
-  if (!user) {
+  console.log("en")
+  if (username === password || phone_number === password) return error400(res,
+    {
+      field: "password",
+      msg: "use a more secure password"
+    }
+  )
 
-    if (username === password || phone_number === password) return error400(res,
-      {
-        field: "password",
-        msg: "use a more secure password"
-      }
-    )
+  const signupToken = Math.floor(100000 + Math.random() * 900000)
 
-    const signupToken = Math.floor(100000 + Math.random() * 900000)
+  const userPayload = encrypt(
+    {
+      username, email, phone_number, password, signupToken
+    },
+    "0.09h" // 5+ minutes
+  )
 
-    const userPayload = encrypt(
-      {
-        username, email, phone_number, password, signupToken
-      },
-      "0.09h" // 5+ minutes
-    )
-
-    sendMail(email, "DartPointAds Registration", `
+  sendMail(email, "DartPointAds Registration", `
     <p>Hey ${username},</p>
     <You>Welcome to the DartPointAds tribe,You are just a step away from completing your sign up.</p>
     <p>Here is your signup OTP, it expires in 5 minutes and please do not share with anyone.</p>
@@ -47,34 +47,7 @@ router.post("/register", async (req, res, next) => {
     <p>With pleasure, <br/>Abdullah from DartPointAds.</p>
   `)
 
-    res.send({ status: "success", userPayload, expiresIn: 5, unit: "m" })
-
-  }
-
-  //BUT IF USER ALREADY EXISTS
-
-  else {
-    if (user.username === username) return error400(res,
-      {
-        field: "username",
-        msg: "Username  exists"
-      }
-    )
-
-    if (user.email === email) return error400(res,
-      {
-        field: "email",
-        msg: "Email  exists"
-      }
-    )
-
-    if (user.phone_number === phone_number) return error400(res,
-      {
-        field: "phone_number",
-        msg: "phone_number exists"
-      }
-    )
-  }
+  res.send({ status: "success", userPayload, expiresIn: 5, unit: "m" })
 
 });
 
@@ -87,13 +60,51 @@ router.post("/create", async (req, res, next) => {
       msg: payload.msg
     })
 
-  return res.send({ payload, otp })
-  // const hashedPassword = hash(password)
+  const { username, email, phone_number, password, signupToken } = payload
+  if (signupToken.toString() !== otp.toString())
+    return error400(res, {
+      field: "otp",
+      msg: "wrong token"
+    })
 
+  //USER_EXISTS
+  let db_user = await User.findOne({
+    $or: [{ username }, { email }, { phone_number }],
+  });
+
+  // USER EXISTS
+  if (db_user) return checkUser(res, payload, db_user)
+
+
+  const hashedPassword = await hash(password)
+  user = new User({ username, email, phone_number, password: hashedPassword });
+  user.avatar = user.dummyAvatar()
+  user = await user.save();
+  res.send({ user: user.transformUserEntity(), token: user.generateJwtToken() });
 })
-// user = new User(req.body, _.pick(["username", "email", "password"])); //create new user
-// await user.save();
-// const token = user.generateJwtToken();
-// res.send(_.pick(user, ["username"]));
+
+
+function checkUser(res, user, db_user) {
+  if (user.username.toLowerCase() === db_user.username) return error400(res,
+    {
+      field: "username",
+      msg: "Username  exists"
+    }
+  )
+
+  if (user.email === db_user.email) return error400(res,
+    {
+      field: "email",
+      msg: "Email  exists"
+    }
+  )
+
+  if (user.phone_number === db_user.phone_number) return error400(res,
+    {
+      field: "phone_number",
+      msg: "phone_number exists"
+    }
+  )
+}
 
 module.exports = router;
