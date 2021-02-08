@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { User, validateLogin, validateSignup, error400, encrypt } = require("../models/user")
+const { User, validateLogin, validateSignup, error400, encrypt, decrypt } = require("../models/user")
 const { hash, verify } = require("argon2")
 const sendMail = require("../config/nodemailer")
 
@@ -30,14 +30,13 @@ router.post("/register", async (req, res, next) => {
       }
     )
 
-    const hashedPassword = hash(password)
     const signupToken = Math.floor(100000 + Math.random() * 900000)
 
     const userPayload = encrypt(
       {
-        username, email, phone_number, hashedPassword, signupToken
+        username, email, phone_number, password, signupToken
       },
-      300 // 5 minutes: 300 seconds
+      "0.09h" // 5+ minutes
     )
 
     sendMail(email, "DartPointAds Registration", `
@@ -81,6 +80,15 @@ router.post("/register", async (req, res, next) => {
 
 router.post("/create", async (req, res, next) => {
   const { userPayload, otp } = req.body
+  let payload = decrypt(userPayload)
+  if (payload.status && payload.status === "failed")
+    return error400(res, {
+      field: "otp",
+      msg: payload.msg
+    })
+
+  return res.send({ payload, otp })
+  // const hashedPassword = hash(password)
 
 })
 // user = new User(req.body, _.pick(["username", "email", "password"])); //create new user

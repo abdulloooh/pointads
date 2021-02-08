@@ -7,10 +7,10 @@ const crypto = require("crypto");
 const algorithm = 'aes-256-cbc';
 
 // Defining key 
-const key = crypto.randomBytes(32);
+const key = config.get("AES_KEY")
 
 // Defining iv 
-const iv = crypto.randomBytes(16);
+const iv = config.get("AES_IV")
 
 const userSchema = new mongoose.Schema({
   username: {
@@ -126,11 +126,13 @@ function decrypt(encryptedData) {
     encryptedData,
     "hex"
   );
+
   let decipher = crypto.createDecipheriv(
     algorithm,
     Buffer.from(key),
     iv
   );
+
   let decrypted = decipher.update(encryptedText);
   decrypted = Buffer.concat([
     decrypted,
@@ -139,7 +141,8 @@ function decrypt(encryptedData) {
   let jwt_decrypt = decrypted.toString();
 
   try {
-    return jwt.verify(jwt_decrypt, config.get("jwt"));
+    const decoded = jwt.verify(jwt_decrypt, config.get("jwt"));
+    return decoded
   } catch (ex) {
     return {
       status: "failed",
@@ -155,5 +158,6 @@ module.exports = {
   validateLogin,
   User,
   error400,
-  encrypt
+  encrypt,
+  decrypt
 };
