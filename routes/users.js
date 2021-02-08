@@ -5,8 +5,8 @@ const { hash, verify } = require("argon2")
 const sendMail = require("../config/nodemailer")
 const { User, validateLogin, validateSignup, error400, encrypt, decrypt } = require("../models/user")
 
-router.get('/', function (req, res, next) {
-  res.send('respond with a resource');
+router.get('/me', passport.authenticate('jwt', { session: false }), (req, res,) => {
+  res.send(req.user);
 });
 
 router.post("/register", async (req, res, next) => {

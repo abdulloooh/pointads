@@ -1,10 +1,10 @@
 const { User } = require("../models/user"),
-    { hash, verify } = require("argon2"),
-    passport = require('passport'),
-    LocalStrategy = require('passport-local').Strategy;
-
+    { verify } = require("argon2")
 
 module.exports = function () {
+    const passport = require('passport'),
+        LocalStrategy = require('passport-local').Strategy;
+
     passport.use(new LocalStrategy(
         {
             usernameField: 'email',
