@@ -6,7 +6,7 @@ const sendMail = require("../config/nodemailer")
 const { User, validateLogin, validateSignup, error400, encrypt, decrypt } = require("../models/user")
 
 router.get('/me', passport.authenticate('jwt', { session: false }), (req, res,) => {
-  res.send(req.user);
+  res.send({ user: req.user.transformUserEntity() });
 });
 
 router.post("/register", async (req, res, next) => {
@@ -83,8 +83,8 @@ router.post("/create", async (req, res, next) => {
   res.send({ user: user.transformUserEntity(), token: user.generateJwtToken() });
 })
 
-router.post("/login", passport.authenticate('local', { session: false }), (req, res) => {
-  return res.send(req.user)
+router.post("/login", passport.authenticate('local', { session: false }), ({ user }, res) => {
+  return res.send({ user: user.transformUserEntity(), token: user.generateJwtToken() })
 })
 
 function checkUser(res, user, db_user) {

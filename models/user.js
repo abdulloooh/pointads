@@ -13,7 +13,7 @@ const key = config.get("AES_KEY")
 // Defining iv 
 const iv = config.get("AES_IV")
 
-const public_fields = ["username", "phone_number", "email", "avatar", "wallet"]
+const public_fields = ["username", "phone_number", "email", "avatar", "wallet", "token"]
 
 const userSchema = new mongoose.Schema({
   username: {
@@ -60,7 +60,7 @@ const userSchema = new mongoose.Schema({
   }
 );
 
-userSchema.methods.generateJwtToken = function (expiry = "5 days") {
+userSchema.methods.generateJwtToken = function (expiry = "7 days") {
   return jwt.sign(
     { _id: this._id, username: this.username },
     config.get("jwt"),

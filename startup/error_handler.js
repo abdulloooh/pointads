@@ -10,7 +10,7 @@ module.exports = function () {
   };
 
   process.on("uncaughtException", (ex) => {
-    debug(ex.message);
+    debug(ex);
     process.quit();
   });
 
