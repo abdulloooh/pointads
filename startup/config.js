@@ -1,14 +1,13 @@
-const app = require("express")();
 const path = require('path');
 const cors = require("cors");
 const config = require("config");
+const passport = require('passport')
 
-module.exports = function () {
+module.exports = function (app) {
   app.set("views", path.join(`${__dirname}/../`, "views"));
   app.set("view engine", "jade");
 
   const corsOptions = {
-    // exposedHeaders: "x_auth_token",
     origin: [
       config.get("origin"),
     ],
@@ -16,6 +15,7 @@ module.exports = function () {
   };
 
   app.use(cors(corsOptions));
+  // app.use(passport.initialize());
 
   if (!config.get("jwt")) {
     throw new Error("FATAL ERROR: jwtPrivateToken key not found");

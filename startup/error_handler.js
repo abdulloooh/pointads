@@ -1,5 +1,5 @@
 require("express-async-errors")
-const debug = require("debug")("backend:db")
+const debug = require("debug")("backend:error")
 
 
 module.exports = function () {

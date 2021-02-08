@@ -3,6 +3,14 @@ const mongoose = require("mongoose");
 const jwt = require("jsonwebtoken");
 const config = require("config");
 const crypto = require("crypto");
+// Difining algorithm 
+const algorithm = 'aes-256-cbc';
+
+// Defining key 
+const key = crypto.randomBytes(32);
+
+// Defining iv 
+const iv = crypto.randomBytes(16);
 
 const userSchema = new mongoose.Schema({
   username: {
@@ -21,7 +29,16 @@ const userSchema = new mongoose.Schema({
     unique: true,
     index: true,
     lowercase: true,
+    minlength: 5,
+    maxlength: 255,
     required: "Please fill in an email"
+  },
+  phone_number: {
+    type: String,
+    minlength: 11,
+    maxlength: 14,
+    required: "Please fill in a phone Number",
+    unique: true,
   },
   password: {
     type: String,
@@ -40,11 +57,11 @@ const userSchema = new mongoose.Schema({
   }
 );
 
-userSchema.methods.generateJwtToken = function () {
+userSchema.methods.generateJwtToken = function (expiry = "5 days") {
   return jwt.sign(
     { _id: this._id, username: this.username },
     config.get("jwt"),
-    { expiresIn: "5 days" }
+    { expiresIn: expiry }
   );
 };
 
@@ -66,6 +83,7 @@ function validateSignup(user) {
   const schema = Joi.object({
     username: Joi.string().min(3).max(30).required(),
     email: Joi.string().email().required(),
+    phone_number: Joi.string().min(11).max(14).required(),
     password: Joi.string().min(3).max(255).required(),
   });
 
@@ -81,10 +99,61 @@ function validateLogin(user) {
   return schema.validate(user);
 }
 
+function error400(res, data) {
+  return res.status(400).send(data);
+}
+
+//Use jwt to easily handle expiry
+let jwt_encrypt
+function encrypt(payload, expiry) {
+  jwt_encrypt = jwt.sign(payload, config.get("jwt"), { expiresIn: expiry });
+
+  let cipher = crypto.createCipheriv(
+    algorithm,
+    Buffer.from(key),
+    iv
+  );
+  let encrypted = cipher.update(jwt_encrypt);
+  encrypted = Buffer.concat([
+    encrypted,
+    cipher.final(),
+  ]);
+  return encrypted.toString("hex");
+}
+
+function decrypt(encryptedData) {
+  let encryptedText = Buffer.from(
+    encryptedData,
+    "hex"
+  );
+  let decipher = crypto.createDecipheriv(
+    algorithm,
+    Buffer.from(key),
+    iv
+  );
+  let decrypted = decipher.update(encryptedText);
+  decrypted = Buffer.concat([
+    decrypted,
+    decipher.final(),
+  ]);
+  let jwt_decrypt = decrypted.toString();
+
+  try {
+    return jwt.verify(jwt_decrypt, config.get("jwt"));
+  } catch (ex) {
+    return {
+      status: "failed",
+      msg: ex.message === "jwt expired" ? ex.message : "Invalid request"
+    }
+  }
+
+}
 
 
 module.exports = {
   validateSignup,
   validateLogin,
   User,
+  error400,
+  encrypt
 };

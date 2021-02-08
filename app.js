@@ -1,9 +1,9 @@
 const app = require("express")();
 
-require("./startup/prod")();
+require("./startup/prod")(app);
 require("./startup/error_handler")();
-require("./startup/config")();
+require("./startup/config")(app);
 require("./startup/db")();
-require("./startup/routes")();
+require("./startup/routes")(app);
 
 module.exports = app;
