@@ -1,7 +1,7 @@
 const path = require('path');
 const cors = require("cors");
 const config = require("config");
-const passport = require('passport')
+// const passport = require('passport')
 
 module.exports = function (app) {
   app.set("views", path.join(`${__dirname}/../`, "views"));

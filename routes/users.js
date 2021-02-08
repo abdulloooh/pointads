@@ -67,7 +67,6 @@ router.post("/create", async (req, res, next) => {
       msg: "wrong token"
     })
 
-  //USER_EXISTS
   let db_user = await User.findOne({
     $or: [{ username }, { email }, { phone_number }],
   });
