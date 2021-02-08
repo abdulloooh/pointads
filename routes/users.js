@@ -1,8 +1,9 @@
 const express = require('express');
 const router = express.Router();
-const { User, validateLogin, validateSignup, error400, encrypt, decrypt } = require("../models/user")
+const passport = require("passport")
 const { hash, verify } = require("argon2")
 const sendMail = require("../config/nodemailer")
+const { User, validateLogin, validateSignup, error400, encrypt, decrypt } = require("../models/user")
 
 router.get('/', function (req, res, next) {
   res.send('respond with a resource');
@@ -82,6 +83,9 @@ router.post("/create", async (req, res, next) => {
   res.send({ user: user.transformUserEntity(), token: user.generateJwtToken() });
 })
 
+router.post("/login", passport.authenticate('local', { session: false }), (req, res) => {
+  return res.send(req.user)
+})
 
 function checkUser(res, user, db_user) {
   if (user.username.toLowerCase() === db_user.username) return error400(res,
