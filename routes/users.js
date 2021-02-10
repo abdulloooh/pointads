@@ -3,7 +3,7 @@ const router = express.Router();
 const passport = require("passport")
 const { hash } = require("argon2")
 const sendMail = require("../config/nodemailer")
-const { User, validateSignup, error400, encrypt, decrypt } = require("../models/user")
+const { User, validate, error400, encrypt, decrypt } = require("../models/user")
 
 router.get('/me', passport.authenticate('jwt', { session: false }), (req, res,) => {
   res.send({ user: req.user.transformUserEntity() });
@@ -11,7 +11,7 @@ router.get('/me', passport.authenticate('jwt', { session: false }), (req, res,) 
 
 router.post("/register", async (req, res, next) => {
   const { username, email, phone_number, password } = req.body
-  const { error } = validateSignup(req.body);
+  const { error } = validate(req.body);
   if (error) return res.status(400).send({
     field: error.details[0].path[0], msg: error.details[0].message
   });
@@ -23,7 +23,6 @@ router.post("/register", async (req, res, next) => {
   // USER EXISTS
   if (db_user) return checkUser(res, req.body, db_user)
 
-  console.log("en")
   if (username === password || phone_number === password) return error400(res,
     {
       field: "password",

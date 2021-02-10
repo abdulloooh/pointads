@@ -23,7 +23,6 @@ const userSchema = new mongoose.Schema({
     maxlength: 50,
     index: true,
     lowercase: true,
-    required: "Please fill in a username",
     trim: true
   },
   email: {
@@ -40,7 +39,6 @@ const userSchema = new mongoose.Schema({
     type: String,
     minlength: 11,
     maxlength: 14,
-    required: "Please fill in a phone Number",
     unique: true,
   },
   password: {
@@ -87,25 +85,25 @@ userSchema.methods.transformUserEntity = function () {
 
 const User = mongoose.model("User", userSchema);
 
-function validateSignup(user) {
+function validate(user) {
   const schema = Joi.object({
-    username: Joi.string().min(3).max(30).required(),
+    username: Joi.string().min(3).max(30),
     email: Joi.string().email().required(),
-    phone_number: Joi.string().min(11).max(14).required(),
+    phone_number: Joi.string().min(11).max(14),
     password: Joi.string().min(3).max(255).required(),
   });
 
   return schema.validate(user);
 }
 
-function validateLogin(user) {
-  const schema = Joi.object({
-    username: Joi.string().min(3).max(30).required(),
-    password: Joi.string().min(3).max(255).required(),
-  });
+// function validateLogin(user) {
+//   const schema = Joi.object({
+//     username: Joi.string().min(3).max(30).required(),
+//     password: Joi.string().min(3).max(255).required(),
+//   });
 
-  return schema.validate(user);
-}
+//   return schema.validate(user);
+// }
 
 function error400(res, data) {
   return res.status(400).send(data);
@@ -162,8 +160,8 @@ function decrypt(encryptedData) {
 
 
 module.exports = {
-  validateSignup,
-  validateLogin,
+  validate,
+  // validateLogin,
   User,
   error400,
   encrypt,
