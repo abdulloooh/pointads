@@ -1,4 +1,4 @@
-const debug = require('debug')('backend:db');
+const debug = require("debug")("backend:db");
 const mongoose = require("mongoose");
 const config = require("config");
 module.exports = function () {
@@ -10,6 +10,6 @@ module.exports = function () {
     })
     .then(() => {
       debug("connected to mongodb successfully...");
-    //   require("../cron-job")(); //after database is ready
+      //   require("../cron-job")(); //after database is ready
     });
 };

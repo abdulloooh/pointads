@@ -1,6 +1,5 @@
-require("express-async-errors")
-const debug = require("debug")("backend:error")
-
+require("express-async-errors");
+const debug = require("debug")("backend:error");
 
 module.exports = function () {
   process.quit = () => {

@@ -6,6 +6,7 @@
   "mailFrom": "",
   "mailName": "",
   "porw": "",
-  "google_scope_url": "https://www.googleapis.com/auth/plus.login",
-  "site_url":""
+  "google_scope_profile_url": "https://www.googleapis.com/auth/plus.login",
+  "google_scope_email_url": "https://www.googleapis.com/auth/userinfo.email",
+  "site_url": ""
 }
