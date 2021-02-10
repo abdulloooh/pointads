@@ -16,8 +16,13 @@ router.post("/register", async (req, res, next) => {
     field: error.details[0].path[0], msg: error.details[0].message
   });
 
+  const expectedIncoming = ["username", "email", "phone_number"]
+  const searchArray = []
+  expectedIncoming.map(i => {
+    if (req.body[i]) searchArray.push({ [i]: req.body[i] })
+  })
   let db_user = await User.findOne({
-    $or: [{ username }, { email }, { phone_number }],
+    $or: searchArray,
   });
 
   // USER EXISTS
@@ -40,7 +45,7 @@ router.post("/register", async (req, res, next) => {
   )
 
   sendMail(email, "DartPointAds Registration", `
-    <p>Hey ${username},</p>
+    <p>Hey there,</p>
     <You>Welcome to the DartPointAds tribe,You are just a step away from completing your sign up.</p>
     <p>Here is your signup OTP, it expires in 5 minutes and please do not share with anyone.</p>
     <p>${signupToken}</p>
@@ -84,7 +89,7 @@ router.post("/create", async (req, res, next) => {
 
 
 function checkUser(res, user, db_user) {
-  if (user.username.toLowerCase() === db_user.username) return error400(res,
+  if (user.username && (user.username.toLowerCase() === db_user.username)) return error400(res,
     {
       field: "username",
       msg: "Username  exists"
