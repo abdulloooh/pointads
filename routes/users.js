@@ -125,8 +125,6 @@ router.post("/create", async (req, res, next) => {
   });
 });
 
-
-
 module.exports = router;
 
 // http://www.passportjs.org/docs/google/

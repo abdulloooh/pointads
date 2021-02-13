@@ -92,11 +92,22 @@ function checkUser(res, user, db_user) {
         });
 }
 
+function filterUsers(filterData) {
+    let filterQuery = {}
+    const keys = Object.keys(filterData)
+    keys.map(key => {
+        filterQuery[key] = { $in: filterData[key] }
+    })
+    return filterQuery
+}
+
 module.exports = {
     validate,
     // validateLogin,
     error400,
     encrypt,
     decrypt,
-    checkUser
+    checkUser,
+    filterUsers
+
 };

@@ -4,10 +4,12 @@ const path = require("path");
 const cookieParser = require("cookie-parser");
 const logger = require("morgan");
 const asyncError = require("../middlewares/async_error");
+const passport = require("passport");
 
 const indexRouter = require("../routes/index");
 const userRouter = require("../routes/users");
 const authRouter = require("../routes/auth");
+const adRouter = require("../routes/ad")
 
 module.exports = function (app) {
   app.use(logger("dev"));
@@ -20,6 +22,7 @@ module.exports = function (app) {
   app.use("/api", indexRouter);
   app.use("/api/users", userRouter);
   app.use("/api/auth", authRouter);
+  app.use("/api/ads", passport.authenticate("jwt", { session: false }), adRouter)
 
   app.use(asyncError);
 };
