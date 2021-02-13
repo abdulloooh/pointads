@@ -2,7 +2,6 @@ const express = require("express");
 const router = express.Router();
 const passport = require("passport");
 const config = require("config");
-// const { User, validate, error400, encrypt, decrypt } = require("../models/user")
 
 router.post(
   "/login",

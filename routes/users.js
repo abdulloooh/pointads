@@ -3,13 +3,8 @@ const router = express.Router();
 const passport = require("passport");
 const { hash } = require("argon2");
 const sendMail = require("../config/nodemailer");
-const {
-  User,
-  validate,
-  error400,
-  encrypt,
-  decrypt,
-} = require("../models/user");
+const User = require("../models/user");
+const { validate, error400, encrypt, decrypt, checkUser, } = require("../controllers/userController");
 
 router.get(
   "/me",
@@ -130,31 +125,7 @@ router.post("/create", async (req, res, next) => {
   });
 });
 
-function checkUser(res, user, db_user) {
-  if (user.username && user.username.toLowerCase() === db_user.username)
-    return error400(res, {
-      field: "username",
-      msg: `Username exists${
-        db_user.googleId ? ", please log in with google option" : ""
-      }`,
-    });
 
-  if (user.email === db_user.email)
-    return error400(res, {
-      field: "email",
-      msg: `Email exists${
-        db_user.googleId ? ", please log in with google option" : ""
-      }`,
-    });
-
-  if (user.phone_number === db_user.phone_number)
-    return error400(res, {
-      field: "phone_number",
-      msg: `Phone number exists${
-        db_user.googleId ? ", please log in with google option" : ""
-      }`,
-    });
-}
 
 module.exports = router;
 

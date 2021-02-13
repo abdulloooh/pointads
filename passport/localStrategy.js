@@ -1,4 +1,4 @@
-const { User } = require("../models/user"),
+const User = require("../models/user"),
   { verify } = require("argon2");
 
 module.exports = function () {
