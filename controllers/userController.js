@@ -96,7 +96,8 @@ function filterUsers(filterData) {
     let filterQuery = {}
     const keys = Object.keys(filterData)
     keys.map(key => {
-        filterQuery[key] = { $in: filterData[key] }
+        filterQuery[key] = { $regex: filterData[key].join("|"), $options: "i" }
+        //could have used $in with each of the array filed as regex too
     })
     return filterQuery
 }
