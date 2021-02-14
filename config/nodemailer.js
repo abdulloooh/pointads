@@ -7,7 +7,7 @@ module.exports = function (to, subject, html) {
     service: "gmail",
     auth: {
       user: config.get("mailFrom"),
-      pass: jwt.verify(config.get("porw"), config.get("jwt")).porw,
+      pass: config.get("porw"),
     },
   });
 
