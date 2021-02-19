@@ -24,7 +24,7 @@ module.exports = function (app) {
   app.use("/api/users", userRouter);
   app.use("/api/auth", authRouter);
   app.use("/api/ads", passport.authenticate("jwt", { session: false }), adRouter)
-  app.use("/api/pay", passport.authenticate("jwt", { session: false }), payRouter)
+  app.use("/api/pay", payRouter)
 
   app.use(asyncError);
 };
