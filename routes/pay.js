@@ -65,6 +65,7 @@ router.post("/fw", passport.authenticate("jwt", { session: false }),
     })
 
 router.post("/fw_webhook", async (req, res) => {
-    console.log({ body: req.body, headers: req.headers })
+    const { body, event, headers } = req
+    console.log(body.status, body.amount, body.customer, body.txRef, headers['verif-hash'], event)
 })
 module.exports = router
