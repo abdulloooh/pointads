@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-const transactionSchema = new mongoosse.Schema(
+const transactionSchema = new mongoose.Schema(
     {
         tx_ref: {
             type: String,
@@ -24,3 +24,5 @@ const transactionSchema = new mongoosse.Schema(
         timestamps: true,
     }
 )
+
+module.exports = mongoose.model("Transaction", transactionSchema)

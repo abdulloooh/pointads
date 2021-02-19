@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const config = require("config")
 const axios = require("axios")
+const transaction = require("../models/transaction")
 const { error400 } = require("../controllers/userController");
 
 router.post("/fw", async (req, res) => {
@@ -29,13 +30,13 @@ router.post("/fw", async (req, res) => {
 
     const { data: resp } = await axios.post("https://api.flutterwave.com/v3/payments", fw_payload,
         {
-            Headers: {
+            headers: {
                 Authorization: `Bearer ${config.get("FW_SECRET_KEY")}`,
                 "Content-Type": "application/json",
             }
         })
 
-    if (resp.status === success) {
+    if (resp.status === "success") {
         new transaction({
             tx_ref: fw_payload.tx_ref,
             amount: fw_payload.amount,
