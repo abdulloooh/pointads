@@ -7,6 +7,10 @@
     "dev": "DEBUG=backend:* nodemon ./bin/www",
     "format": "prettier --write ."
   },
+       "engines": {
+        "node": "14.15.4",
+        "npm": "6.14.10"
+    },
   "dependencies": {
     "@hapi/joi": "^17.1.1",
     "argon2": "^0.27.1",
