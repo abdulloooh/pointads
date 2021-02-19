@@ -72,6 +72,7 @@ function decrypt(encryptedData) {
 function checkUser(res, user, db_user) {
     if (user.username && user.username.toLowerCase() === db_user.username)
         return error400(res, {
+            status: "failed",
             field: "username",
             msg: `Username exists${db_user.googleId ? ", please log in with google option" : ""
                 }`,
@@ -79,6 +80,7 @@ function checkUser(res, user, db_user) {
 
     if (user.email === db_user.email)
         return error400(res, {
+            status: "failed",
             field: "email",
             msg: `Email exists${db_user.googleId ? ", please log in with google option" : ""
                 }`,
@@ -86,6 +88,7 @@ function checkUser(res, user, db_user) {
 
     if (user.phone_number === db_user.phone_number)
         return error400(res, {
+            status: "failed",
             field: "phone_number",
             msg: `Phone number exists${db_user.googleId ? ", please log in with google option" : ""
                 }`,

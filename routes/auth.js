@@ -42,8 +42,3 @@ router.get(
 
 module.exports = router;
 
-/***
- * A link or button can be placed on a web page,
- * allowing one - click sign in with Google.
- * <a href = "/auth/google" > Sign In with Google</a>
- */
