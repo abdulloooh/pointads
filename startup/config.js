@@ -8,7 +8,7 @@ const passport_google = require("../passport/googleStrategy");
 
 module.exports = function (app) {
   const corsOptions = {
-    origin: [config.get("origin")],
+    origin: [config.get("client")],
     credentials: true,
   };
 

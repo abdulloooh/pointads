@@ -19,7 +19,7 @@ router.post("/fw", passport.authenticate("jwt", { session: false }),
         let fw_payload = {
             tx_ref: `${req.user._id}NGN${Date.now()}`,
             amount: `${amount}`,
-            redirect_url: `${config.get("origin")}`,
+            redirect_url: `${config.get("client")}`,
             payment_options: "card",
             currency: "NGN",
             customer: {

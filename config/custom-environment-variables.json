@@ -1,7 +1,22 @@
 {
   "jwt": "jwt",
   "db": "db",
-  "SENDGRID_API_KEY": "SENDGRID_API_KEY",
   "mailFrom": "mailFrom",
-  "mailName": "mailName"
+  "mailName": "mailName",
+  "client": "client",
+  "porw": "porw",
+  "AES_KEY": "AES_KEY",
+  "AES_IV": "AES_ID",
+  "server": "server",
+  "google_scope_profile_url": "google_scope_profile_url",
+  "google_scope_email_url": "google_scope_email_url",
+  "GOOGLE_CLIENT_ID": "GOOGLE_CLIENT_ID",
+  "GOOGLE_CLIENT_SECRET": "GOOGLE_CLIENT_SECRET",
+  "FW_PUBLIC_KEY": "FW_PUBLIC_KEY",
+  "FW_SECRET_KEY": "FW_SECRET_KEY",
+  "FW_ENC_KEY": "FW_ENC_KEY",
+  "FW_HASH": "FW_HASH"
 }
+
+
+

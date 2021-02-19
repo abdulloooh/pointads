@@ -1,8 +1,19 @@
 {
   "jwt": "",
   "db": "",
-  "origin": "",
+  "client": "",
   "mailFrom": "",
   "mailName": "",
-  "porw": ""
+  "porw": "",
+  "AES_KEY": "",
+  "AES_IV": "",
+  "server": "",
+  "google_scope_profile_url": "",
+  "google_scope_email_url": "",
+  "GOOGLE_CLIENT_ID": "",
+  "GOOGLE_CLIENT_SECRET": "",
+  "FW_PUBLIC_KEY": "",
+  "FW_SECRET_KEY": "",
+  "FW_ENC_KEY": "",
+  "FW_HASH": ""
 }
