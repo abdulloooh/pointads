@@ -6,7 +6,7 @@
   "client": "client",
   "porw": "porw",
   "AES_KEY": "AES_KEY",
-  "AES_IV": "AES_ID",
+  "AES_IV": "AES_IV",
   "server": "server",
   "google_scope_profile_url": "google_scope_profile_url",
   "google_scope_email_url": "google_scope_email_url",
