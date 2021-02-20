@@ -76,7 +76,7 @@ router.post("/fw_webhook", async (req, res) => {
         const trx = await transaction.find({ tx_ref: body.txRef })
         if (!trx || trx.status !== "PENDING") res.sendStatus(200)
 
-        console.log(JSON.stringify(body))
+        console.log(JSON.parse(body))
         console.log("done")
     }
 
