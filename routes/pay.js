@@ -93,16 +93,16 @@ router.post("/fw_webhook", async (req, res) => {
             }
         )
 
-        return res.sendStatus(200)
+        res.sendStatus(200)
     }
     else {
         console.log("FAILED")
-        await transaction.updateOne(
-            { email: body['customer[email]'] },
+        await transaction.findByIdAndUpdate(
+            trx._id,
             {
                 $set: { status: "FAILED" }
             })
-        return res.sendStatus(200)
+        res.sendStatus(200)
     }
 })
 

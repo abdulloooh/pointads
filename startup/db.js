@@ -4,9 +4,9 @@ const config = require("config");
 module.exports = function () {
   mongoose
     .connect(config.get("db"), {
-      reconnectTries: 5000,
       useNewUrlParser: true,
       useUnifiedTopology: true,
+      useFindAndModify: false
     })
     .then(() => {
       debug("connected to mongodb successfully...");
