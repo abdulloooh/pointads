@@ -77,6 +77,7 @@ router.post("/fw_webhook", async (req, res) => {
         if (!trx || trx.status !== "PENDING") res.sendStatus(200)
 
         fs.writeFileSync("/tmp/save.js", JSON.stringify(body))
+        console.log("done")
     }
 
 })
