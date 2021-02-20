@@ -80,8 +80,6 @@ router.post("/fw_webhook", async (req, res) => {
         if (!trx || trx.status !== "PENDING") return res.sendStatus(200)
 
         if (trx && data.status === "successful") {
-            console.log("successful")
-
             await user.findByIdAndUpdate(
                 customerID,
                 {
@@ -98,12 +96,9 @@ router.post("/fw_webhook", async (req, res) => {
                     $set: trx
                 }
             )
-
             res.sendStatus(200)
         }
         else {
-            console.log("FAILED")
-
             trx.status = "FAILED"
             trx.meta = JSON.stringify(data)
 

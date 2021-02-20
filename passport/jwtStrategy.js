@@ -18,7 +18,7 @@ module.exports = function () {
           return done(err, false);
         }
         if (user) {
-          console.log("Authenticated via JWT",)
+          console.log("Authenticated via JWT: ", user.username)
           return done(null, user);
         } else {
           return done({ message: "Invalid user" }, false);
