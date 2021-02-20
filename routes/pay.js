@@ -79,30 +79,32 @@ router.post("/fw_webhook", async (req, res) => {
     if (body.status === "successful") {
         console.log("was success")
         let id = body.txRef.split("==")[0];
-        await transaction.findByIdAndUpdate(
+
+        transaction.findByIdAndUpdate(
             trx._id,
-            {
-                $set: { status: "COMPLETED" }
-            },
+            { status: "COMPLETED", meta: JSON.stringify(body) }
         )
-
-        await user.findByIdAndUpdate(
-            id,
-            {
-                $inc: { wallet: Number(body.amount) }
-            }
-        )
-
-        res.sendStatus(200)
+            .then(() => {
+                user.findByIdAndUpdate(
+                    id,
+                    {
+                        $inc: { wallet: Number(body.amount) }
+                    }
+                )
+            })
+            .then(() => {
+                res.sendStatus(200)
+            })
     }
     else {
         console.log("FAILED")
-        await transaction.findByIdAndUpdate(
+        transaction.findByIdAndUpdate(
             trx._id,
             {
                 $set: { status: "FAILED" }
             })
-        res.sendStatus(200)
+            .then(() => res.sendStatus(200))
+
     }
 })
 
