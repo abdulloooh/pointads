@@ -19,7 +19,7 @@ router.post("/fw", passport.authenticate("jwt", { session: false }),
             });
 
         let fw_payload = {
-            tx_ref: `${req.user._id}NGN${Date.now()}`,
+            tx_ref: `${req.user._id}==NGN${Date.now()}`,
             amount: `${amount}`,
             redirect_url: `${config.get("client")}`,
             payment_options: "card",
@@ -78,14 +78,16 @@ router.post("/fw_webhook", async (req, res) => {
     console.log("before success")
     if (body.status === "successful") {
         console.log("was success")
-        await transaction.updateOne(
-            { email: body['customer[email]'] },
+        let id = body.txRef.split("==")[0];
+        await transaction.findByIdAndUpdate(
+            trx._id,
             {
                 $set: { status: "COMPLETED" }
-            })
+            },
+        )
 
-        await user.updateOne(
-            { email: body['customer[email]'] },
+        await user.findByIdAndUpdate(
+            id,
             {
                 $inc: { wallet: Number(body.amount) }
             }
@@ -93,13 +95,15 @@ router.post("/fw_webhook", async (req, res) => {
 
         return res.sendStatus(200)
     }
-    console.log("failed")
-    await transaction.updateOne(
-        { email: body['customer[email]'] },
-        {
-            $set: { status: "FAILED" }
-        })
-    return res.sendStatus(200)
+    else {
+        console.log("FAILED")
+        await transaction.updateOne(
+            { email: body['customer[email]'] },
+            {
+                $set: { status: "FAILED" }
+            })
+        return res.sendStatus(200)
+    }
 })
 
 module.exports = router
