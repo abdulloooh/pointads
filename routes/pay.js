@@ -67,18 +67,18 @@ router.post("/fw", passport.authenticate("jwt", { session: false }),
 
 router.post("/fw_webhook", async (req, res) => {
 
-    const { body } = req
 
-    if (!req.headers['verif-hash']) res.end()
-    if (req.headers['verif-hash'] !== config.get('FW_HASH')) res.end()
+    // if (!req.headers['verif-hash']) res.end()
+    // if (req.headers['verif-hash'] !== config.get('FW_HASH')) res.end()
 
-    if (body.status === "successful") {
-        const trx = await transaction.find({ tx_ref: body.txRef })
-        if (!trx || trx.status !== "PENDING") res.sendStatus(200)
+    // if (body.status === "successful") {
+    //     const trx = await transaction.find({ tx_ref: body.txRef })
+    //     if (!trx || trx.status !== "PENDING") res.sendStatus(200)
 
-        console.log(JSON.parse(body))
-        console.log("done")
-    }
+    try { console.log(JSON.parse(req.body)) }
+    catch { console.log("well"); console.log(req.body) }
+    console.log("done")
+    // }
 
 })
 module.exports = router
