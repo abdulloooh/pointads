@@ -67,48 +67,55 @@ router.post("/fw", passport.authenticate("jwt", { session: false }),
 
 router.post("/fw_webhook", async (req, res) => {
 
-    const { body } = req
-    console.log(body)
-    console.log(JSON.parse(body))
+    if (!req.headers['verif-hash']) return res.end()
+    if (req.headers['verif-hash'] !== config.get('FW_HASH')) return res.end()
 
-    // if (!req.headers['verif-hash']) return res.end()
-    // if (req.headers['verif-hash'] !== config.get('FW_HASH')) return res.end()
+    if (req.body.event === "charge.completed") {
+        const { data } = req.body
+        const reference = data.tx_ref;
+        const customerID = reference.split("==")[0];
+        const amount = data.amount;
 
-    // const trx = await transaction.find({ tx_ref: body.txRef })
-    // if (!trx || trx.status !== "PENDING") res.sendStatus(200)
+        const trx = await transaction.findOne({ tx_ref: reference })
+        if (!trx || trx.status !== "PENDING") return res.sendStatus(200)
 
-    // console.log("before success")
-    // if (body.status === "successful") {
-    //     console.log("was success")
-    //     let id = body.txRef.split("==")[0];
+        if (trx && data.status === "successful") {
+            console.log("successful")
 
-    //     transaction.findByIdAndUpdate(
-    //         trx._id,
-    //         { status: "COMPLETED", meta: JSON.stringify(body) }
-    //     )
-    //         .then(() => {
-    //             user.findByIdAndUpdate(
-    //                 id,
-    //                 {
-    //                     $inc: { wallet: Number(body.amount) }
-    //                 }
-    //             )
-    //         })
-    //         .then(() => {
-    //             res.sendStatus(200)
-    //         })
-    // }
-    // else {
-    //     console.log("FAILED")
-    //     transaction.findByIdAndUpdate(
-    //         trx._id,
-    //         {
-    //             $set: { status: "FAILED" }
-    //         })
-    //         .then(() => res.sendStatus(200))
+            await user.findByIdAndUpdate(
+                customerID,
+                {
+                    $inc: { wallet: Number(amount) }
+                }
+            )
 
-    // }
-    res.sendStatus(200)
+            trx.status = "COMPLETED"
+            trx.meta = JSON.stringify(data)
+
+            await transaction.findByIdAndUpdate(
+                trx._id,
+                {
+                    $set: trx
+                }
+            )
+
+            res.sendStatus(200)
+        }
+        else {
+            console.log("FAILED")
+
+            trx.status = "FAILED"
+            trx.meta = JSON.stringify(data)
+
+            await transaction.findByIdAndUpdate(
+                trx._id,
+                {
+                    $set: trx
+                }
+            )
+            res.sendStatus(200)
+        }
+    }
 })
 
 module.exports = router
