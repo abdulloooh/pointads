@@ -72,7 +72,7 @@ router.post("/fw_webhook", async (req, res) => {
     if (!req.headers['verif-hash']) res.end()
     if (req.headers['verif-hash'] !== config.get('FW_HASH')) res.end()
 
-    if (body.status === successful) {
+    if (body.status === "successful") {
         const trx = await transaction.find({ tx_ref: body.txRef })
         if (!trx || trx.status !== "PENDING") res.sendStatus(200)
 
