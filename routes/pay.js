@@ -100,3 +100,5 @@ router.post("/fw_webhook", async (req, res) => {
         })
     res.sendStatus(200)
 })
+
+module.exports = router
