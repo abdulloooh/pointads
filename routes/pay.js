@@ -68,6 +68,7 @@ router.post("/fw", passport.authenticate("jwt", { session: false }),
 router.post("/fw_webhook", async (req, res) => {
 
     const { body } = req
+    console.log(JSON.stringify(body))
 
     if (!req.headers['verif-hash']) return res.end()
     if (req.headers['verif-hash'] !== config.get('FW_HASH')) return res.end()
