@@ -5,6 +5,7 @@ const passport = require("passport");
 const axios = require("axios")
 const transaction = require("../models/transaction")
 const { error400 } = require("../controllers/userController");
+const fs = require('fs');
 
 router.post("/fw", passport.authenticate("jwt", { session: false }),
     async (req, res) => {
@@ -65,18 +66,51 @@ router.post("/fw", passport.authenticate("jwt", { session: false }),
     })
 
 router.post("/fw_webhook", async (req, res) => {
+    fs.writeFileSync('/tmp/save.js', req);
     const { body, headers } = req
-    console.log(
-        {
-            status: body.status,
-            amount: body.amount,
-            phone: body.customer.phone,
-            id: body.customer[id],
-            ref: body.txRef,
-            hash: headers['verif-hash'],
-            event: body['event.type']
-        })
+    try {
+        console.log(
+            {
+                status: body.status,
+                amount: body.amount,
+                phone: body.customer.phone,
+                id: body.customer[id],
+                ref: body.txRef,
+                hash: headers['verif-hash'],
+                event: body['event.type']
+            })
 
-    console.log(req)
+    }
+    catch {
+
+        try {
+            console.log(
+                {
+                    status: body.status,
+                    amount: body.amount,
+                    id: body.customer[id],
+                    ref: body.txRef,
+                    hash: headers['verif-hash'],
+                    event: body['event.type']
+                })
+        }
+        catch {
+            try {
+                console.log(
+                    {
+                        status: body.status,
+                        amount: body.amount,
+                        ref: body.txRef,
+                        hash: headers['verif-hash'],
+                        event: body['event.type']
+                    })
+            }
+            catch {
+                console.log(req)
+            }
+        }
+
+    }
+
 })
 module.exports = router
