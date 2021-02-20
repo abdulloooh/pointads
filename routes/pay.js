@@ -67,49 +67,16 @@ router.post("/fw", passport.authenticate("jwt", { session: false }),
 
 router.post("/fw_webhook", async (req, res) => {
 
-    const { body, headers } = req
-    try {
-        console.log(
-            {
-                status: body.status,
-                amount: body.amount,
-                phone: body.customer.phone,
-                id: body.customer[id],
-                ref: body.txRef,
-                hash: headers['verif-hash'],
-                event: body['event.type']
-            })
+    const { body } = req
 
-    }
-    catch {
+    if (!req.headers['verif-hash']) res.end()
+    if (req.headers['verif-hash'] !== config.get('FW_HASH')) res.end()
 
-        try {
-            console.log(
-                {
-                    status: body.status,
-                    amount: body.amount,
-                    id: body.customer[id],
-                    ref: body.txRef,
-                    hash: headers['verif-hash'],
-                    event: body['event.type']
-                })
-        }
-        catch {
-            try {
-                console.log(
-                    {
-                        status: body.status,
-                        amount: body.amount,
-                        ref: body.txRef,
-                        hash: headers['verif-hash'],
-                        event: body['event.type']
-                    })
-            }
-            catch {
-                console.log(req)
-            }
-        }
+    if (body.status === successful) {
+        const trx = await transaction.find({ tx_ref: body.txRef })
+        if (!trx || trx.status !== "PENDING") res.sendStatus(200)
 
+        fs.writeFileSync("/tmp/save.js", JSON.stringify(body))
     }
 
 })

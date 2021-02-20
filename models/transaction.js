@@ -20,7 +20,7 @@ const transactionSchema = new mongoose.Schema(
             required: true
         },
         meta: {
-            type: Object
+            type: String
         }
     },
     {
