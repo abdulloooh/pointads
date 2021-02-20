@@ -5,7 +5,7 @@ const passport = require("passport");
 const axios = require("axios")
 const transaction = require("../models/transaction")
 const { error400 } = require("../controllers/userController");
-const fs = require('fs');
+const user = require("../models/user");
 
 router.post("/fw", passport.authenticate("jwt", { session: false }),
     async (req, res) => {
@@ -67,18 +67,36 @@ router.post("/fw", passport.authenticate("jwt", { session: false }),
 
 router.post("/fw_webhook", async (req, res) => {
 
+    const { body } = req
 
-    // if (!req.headers['verif-hash']) res.end()
-    // if (req.headers['verif-hash'] !== config.get('FW_HASH')) res.end()
+    if (!req.headers['verif-hash']) res.end()
+    if (req.headers['verif-hash'] !== config.get('FW_HASH')) res.end()
 
-    // if (body.status === "successful") {
-    //     const trx = await transaction.find({ tx_ref: body.txRef })
-    //     if (!trx || trx.status !== "PENDING") res.sendStatus(200)
+    const trx = await transaction.find({ tx_ref: body.txRef })
+    if (!trx || trx.status !== "PENDING") res.sendStatus(200)
 
-    try { console.log(JSON.parse(req.body)) }
-    catch { console.log("well"); console.log(req.body) }
-    console.log("done")
-    // }
+    if (body.status === "successful") {
 
+        await transaction.updateOne(
+            { email: body['customer[email]'] },
+            {
+                $set: { status: "COMPLETED" }
+            })
+
+        await user.updateOne(
+            { email: body['customer[email]'] },
+            {
+                $inc: { wallet: Number(body.amount) }
+            }
+        )
+
+        return res.sendStatus(200)
+    }
+
+    await transaction.updateOne(
+        { email: body['customer[email]'] },
+        {
+            $set: { status: "FAILED" }
+        })
+    res.sendStatus(200)
 })
-module.exports = router
