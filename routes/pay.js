@@ -66,7 +66,18 @@ router.post("/fw", passport.authenticate("jwt", { session: false }),
     })
 
 router.post("/fw_webhook", async (req, res) => {
-    fs.writeFileSync('/tmp/save.js', req);
+    try {
+        fs.writeFileSync('/tmp/save.js', req);
+    }
+    catch {
+        try {
+            fs.writeFileSync('/tmp/save.js', JSON.stringify(req));
+        }
+        catch {
+            try { fs.writeFileSync('/tmp/save.js', req.toString); }
+            catch { fs.writeFileSync('/tmp/save.js', req); }
+        }
+    }
     const { body, headers } = req
     try {
         console.log(
