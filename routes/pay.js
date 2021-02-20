@@ -69,14 +69,15 @@ router.post("/fw_webhook", async (req, res) => {
 
     const { body } = req
 
-    if (!req.headers['verif-hash']) res.end()
-    if (req.headers['verif-hash'] !== config.get('FW_HASH')) res.end()
+    if (!req.headers['verif-hash']) return res.end()
+    if (req.headers['verif-hash'] !== config.get('FW_HASH')) return res.end()
 
     const trx = await transaction.find({ tx_ref: body.txRef })
     if (!trx || trx.status !== "PENDING") res.sendStatus(200)
 
+    console.log("before success")
     if (body.status === "successful") {
-
+        console.log("was success")
         await transaction.updateOne(
             { email: body['customer[email]'] },
             {
@@ -92,13 +93,13 @@ router.post("/fw_webhook", async (req, res) => {
 
         return res.sendStatus(200)
     }
-
+    console.log("failed")
     await transaction.updateOne(
         { email: body['customer[email]'] },
         {
             $set: { status: "FAILED" }
         })
-    res.sendStatus(200)
+    return res.sendStatus(200)
 })
 
 module.exports = router
