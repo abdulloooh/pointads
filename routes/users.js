@@ -6,6 +6,13 @@ const sendMail = require("../config/nodemailer");
 const User = require("../models/user");
 const { validate, error400, encrypt, decrypt, checkUser, } = require("../controllers/userController");
 
+/**
+ * @swagger
+ * /api/users/me:
+ *   get:
+ *     summary: Retrieve logged in user
+ *     description: Retrieve a list of users from JSONPlaceholder. Can be used to populate a list of fake users when prototyping or testing an API.
+*/
 router.get(
   "/me",
   passport.authenticate("jwt", { session: false }),
