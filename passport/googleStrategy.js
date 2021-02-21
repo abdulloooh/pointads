@@ -53,5 +53,6 @@ module.exports = function () {
 };
 
 
+// http://www.passportjs.org/docs/google/
 // https://developers.google.com/identity/protocols/oauth2/scopes#google-sign-in
 // https://dev.to/phyllis_yym/beginner-s-guide-to-google-oauth-with-passport-js-2gh4?signin=true

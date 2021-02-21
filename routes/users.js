@@ -8,10 +8,11 @@ const { validate, error400, encrypt, decrypt, checkUser, } = require("../control
 
 /**
  * @swagger
- * /api/users/me:
+ * /users/me:
  *   get:
  *     summary: Retrieve logged in user
- *     description: Retrieve a list of users from JSONPlaceholder. Can be used to populate a list of fake users when prototyping or testing an API.
+ *     security:
+ *       - bearerAuth: []
 */
 router.get(
   "/me",
@@ -20,6 +21,14 @@ router.get(
     res.send({ user: req.user.transformUserEntity() });
   }
 );
+
+/**
+ * @swagger
+ * /users/register:
+ *   post:
+ *     summary: Register and get mailed token
+ *     security: []
+*/
 
 router.post("/register", async (req, res, next) => {
   const { username, email, phone_number, avatar, password } = req.body;
@@ -84,6 +93,13 @@ router.post("/register", async (req, res, next) => {
   res.send({ status: "success", userPayload, expiresIn: 5, unit: "m" });
 });
 
+/**
+ * @swagger
+ * /users/create:
+ *   post:
+ *     summary: Confirm token and create a new user
+ *     security: []
+*/
 router.post("/create", async (req, res, next) => {
   const { userPayload, otp } = req.body;
   let payload = decrypt(userPayload);
@@ -138,4 +154,3 @@ router.post("/create", async (req, res, next) => {
 
 module.exports = router;
 
-// http://www.passportjs.org/docs/google/

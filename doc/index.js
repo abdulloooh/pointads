@@ -1,6 +1,7 @@
 const swaggerUi = require("swagger-ui-express")
 // const swaggerFile = require('./swagger_output.json')
 const swaggerJSDoc = require("swagger-jsdoc")
+const components = require("./components")
 
 module.exports = function (app) {
     /**
@@ -24,14 +25,19 @@ module.exports = function (app) {
         },
         servers: [
             {
-                url: "http://localhost:4000/api",
+                url: "http://localhost:4000",
                 description: "Development server"
             },
             {
-                url: "https://dartpa.herokuapp.com/api",
+                url: "https://dartpa.herokuapp.com",
                 description: "Production server"
             }
-        ]
+        ],
+        basePath: "/api",
+        components,
+        security: [{
+            bearerAuth: []
+        }]
     };
 
     const options = {
@@ -47,3 +53,6 @@ module.exports = function (app) {
 
 // https://davibaltar.medium.com/documenta%C3%A7%C3%A3o-autom%C3%A1tica-de-apis-em-node-js-eb03041c643b
 // https://dev.to/kabartolo/how-to-document-an-express-api-with-swagger-ui-and-jsdoc-50do
+// https://github.com/Surnet/swagger-jsdoc/issues/141
+// https://swagger.io/docs/specification/authentication/#securitySchemes
+// https://swagger.io/docs/specification/basic-structure/
