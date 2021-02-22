@@ -71,6 +71,10 @@
                 "field": {"type":"string", "example":"email"},
                 "msg": {"type":"string", "example":"use google option to sign in"}
             } 
+        },
+        "unauthorized":{
+            "type":"string",
+            "example": "Unauthorized"
         }
     },
     "examples": {
@@ -91,6 +95,14 @@
                 "unit": "m"
         },
         "userObject": {
+            "user": {
+                "username": "abdullah oladipo",
+                "email": "abdulllooohhh@gmail.com",
+                "avatar": "https://lh3.googleusercontent.com/a-/AOh14GigdT2x1bWIlwYiHD7ipUHFQ_69R5_iZYb6xYNt=s96-c",
+                "wallet": 0
+            }
+        },
+        "userWithToken": {
             "user": {
                 "username": "abdullah oladipo",
                 "email": "abdulllooohhh@gmail.com",
@@ -180,8 +192,36 @@
                       "application/json":{
                         "examples":{
                             "userObject": {
-                                    "$ref":"#/components/examples/userObject"
+                                    "$ref":"#/components/examples/userWithToken"
                                 }
+                        }
+                      }
+                  }
+                  }
+              }
+            }
+        },
+      "/users/me":{
+          "get":{
+              "summary": "Get user",
+              "tags":["user"],
+              "responses":{
+                  "200":{
+                      "content":{
+                      "application/json":{
+                        "examples":{
+                            "userObject":{
+                                "$ref":"#/components/examples/userObject"
+                            }
+                        }
+                      }
+                  }
+                  },
+                  "401":{
+                      "content":{
+                      "application/json":{
+                        "schema":{
+                            "$ref":"#/components/responses/unauthorized"
                         }
                       }
                   }
@@ -218,7 +258,7 @@
                       "application/json":{
                         "examples":{
                             "userObject": {
-                                    "$ref":"#/components/examples/userObject"
+                                    "$ref":"#/components/examples/userWithToken"
                                 }
                         }
                       }
