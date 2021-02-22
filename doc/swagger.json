@@ -27,7 +27,8 @@
             "bearerFormat": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MDJmZjYwZjU1ZGViNDAwMTVmMWYzZmQiLCJpYXQiOjE2MTM3NTU5MTksImV4cCI6MTYxNDM2MDcxOX0.P - MPAAxgW_8bzLM2hkSWmQQ0DaevVEE - 36UZrocCTI4"
         }
     },
-    "schemas": {
+    "schemas": {},
+    "requestBodies":{
         "userRegister": {
             "type": "object",
             "required": ["email", "phone_number", "password"],
@@ -36,6 +37,24 @@
                 "email": { "type": "string", "example": "abdullahakinwumi@gmail.com" },
                 "phone_number": { "type": "string", "example": "09036058937" },
                 "password": { "type": "string", "example": "ghay28d7d7" }
+            }
+        },
+        "confirmOtp":{
+            "type": "object",
+            "properties": {
+                "otp": {"type":"string", "example": "767287"},
+                "userPayload": {"type":"string", "example": "67d88c94301ecd43717e0db6e56b48d328a87a42e4c121110f1c64707692c0d3f27a104bdfba9e4ebf05e526a09a0fc7987"}
+            }
+        }
+    },
+    "responses":{
+        "otpFailed":{
+            "type":"object",
+            "required":["msg"],
+            "properties":{
+                "status": {"type":"string", "example":"failed"},
+                "field": {"type":"string", "example":"otp"},
+                "msg": {"type":"string", "example":"otp expired"}
             }
         }
     },
@@ -49,8 +68,23 @@
             "status": "failed",
             "field": "username",
             "msg": "\"username\" length must be at least 3 characters long"
+        },
+        "otpSent" : {
+                "status": "success",
+                "userPayload": "67d88ca104bdfba9e4ebf057f0f47adcdf152bd58876081d2eeba37f8365c99fb4aead8381c93ac5c0eb8ee87717d7b8a9286d479410402c3b303ec89f584fa31a97d4751a69ee5064d440aa7e3f4a7838245",
+                "expiresIn": 5,
+                "unit": "m"
+        },
+        "userObject": {
+            "user": {
+                "username": "abdullah oladipo",
+                "email": "abdulllooohhh@gmail.com",
+                "avatar": "https://lh3.googleusercontent.com/a-/AOh14GigdT2x1bWIlwYiHD7ipUHFQ_69R5_iZYb6xYNt=s96-c",
+                "wallet": 0
+            },
+            "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MDMzN2YzY2JiOTQxMDMzNGE1NDU5NTciLCJpYXQiOjE2MTM5ODc2NDQsImV4cCI6MTYxNDU5MjQ0NH0.R89xLQ1UFIAoOoBxoF2GKNCarTBNb74xZKtchtCraBc"
+            }
         }
-    }
   },
   "security": [{
       "bearerAuth": []
@@ -59,12 +93,13 @@
       "/users/register":{
           "post":{
               "summary": "Register and get mailed token",
+              "tags": ["user"],
               "security": [],
               "requestBody": {
                   "content": {
                       "application/json":{
                           "schema":{
-                              "$ref": "#/components/schemas/userRegister"
+                              "$ref": "#/components/requestBodies/userRegister"
                           }
                       }
                   }
@@ -84,9 +119,59 @@
                               }
                           }
                       }
+                  },
+                  "200":{
+                      "description": "Successful, OTP sent",
+                      "content":{
+                          "application/json":{
+                              "examples":{
+                                  "otpSent":{
+                                      "$ref":"#/components/examples/otpSent"
+                                  }
+                              }
+                          }
+                      }
                   }
               }
           }
-      }
-  }
+      },
+      "/users/create":{
+          "post":{
+              "summary": "Confirm token and create a new user",
+              "tags":["user"],
+              "security": [],
+              "requestBody": {
+                  "content": {
+                      "application/json":{
+                          "schema":{
+                              "$ref": "#/components/requestBodies/confirmOtp"
+                          }
+                      }
+                  }
+              },
+              "responses":{
+                  "400":{
+                      "content":{
+                      "application/json":{
+                        "schema":{
+                            "$ref":"#/components/responses/otpFailed"
+                        }
+                      }
+                  }
+                  },
+                  "200":{
+                      "content":{
+                      "application/json":{
+                        "examples":{
+                            "userObject": {
+                                    "$ref":"#/components/examples/userObject"
+                                }
+                        }
+                      }
+                  }
+                  }
+              }
+            }
+        }
+    }
 }

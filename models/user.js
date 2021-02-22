@@ -6,7 +6,6 @@ const crypto = require("crypto");
 
 const public_fields = [
   "username",
-  "phone_number",
   "email",
   "avatar",
   "wallet",

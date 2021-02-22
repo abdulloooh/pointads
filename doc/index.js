@@ -4,15 +4,6 @@ const swaggerDocument = require('./swagger.json')
 // const components = require("./components")
 
 module.exports = function (app) {
-    /**
-     * Can auto generate the doc straight whiich is far from accuracy from my pov
-     * Can also document it manually but in a single swagger_output file
-     * ... for example and serve it
-     * This will probably get crazily long and not easily maintainable
-     */
-    // app.use("/api/docs", swaggerUi.serve, swaggerUi.setup(swaggerFile))
-
-    // But I will use swagger-jsdoc so I can do inline documentation
     // const swaggerDefinition = {
     //     openapi: '3.0.0',
     //     info: {

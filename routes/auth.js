@@ -33,10 +33,11 @@ router.get(
     scope: ["profile", "email"],
   }),
   function ({ user }, res) {
-    return res.send({
-      user: user.transformUserEntity(),
-      token: user.generateJwtToken(),
-    });
+    return res.redirect(`${config.get("client")}?token=${user.generateJwtToken()}`)
+    // return res.send({
+    //   user: user.transformUserEntity(),
+    //   token: user.generateJwtToken(),
+    // });
   }
 );
 
