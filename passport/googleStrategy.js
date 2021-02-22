@@ -27,8 +27,11 @@ module.exports = function () {
             ) {
               return done(
                 {
-                  message:
-                    "Account exists, please log in with your email and password",
+                  status: 400,
+                  details: {
+                    field: "email",
+                    msg: "Account exists, please log in with email-password option."
+                  }
                 },
                 false
               );

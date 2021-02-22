@@ -18,12 +18,42 @@ module.exports = function () {
           }
 
           if (!user) {
-            return done({ message: "Incorrect email or password." }, false);
+            return done(
+              {
+                status: 400,
+                details: {
+                  field: "email",
+                  msg: "Incorrect email or password."
+                }
+              },
+              false
+            );
           }
+
+          //user exists but through google
+          if (user.googleId) return done(
+            {
+              status: 400,
+              details: {
+                field: "email",
+                msg: "use google option to sign in"
+              }
+            },
+            false
+          )
 
           verify(user.password, password).then((valid) => {
             if (!valid)
-              return done({ message: "Incorrect email or password." }, false);
+              return done(
+                {
+                  status: 400,
+                  details: {
+                    field: "email",
+                    msg: "Incorrect email or password."
+                  }
+                },
+                false
+              );
             return done(null, user);
           });
         });
