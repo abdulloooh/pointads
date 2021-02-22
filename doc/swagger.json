@@ -1,0 +1,92 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+      "title": "DartPointAds API Documentation",
+      "version": "1.0.0",
+      "contact": {
+          "name": "Contact: Abdullah",
+          "url": "https://github.com/abdulloooh"
+      }
+  },
+  "servers": [
+      {
+          "url": "http://localhost:4000",
+          "description": "Development server"
+      },
+      {
+          "url": "https://dartpa.herokuapp.com",
+          "description": "Production server"
+      }
+  ],
+  "basePath": "/api",
+  "components": {
+    "securitySchemes": {
+        "bearerAuth": {
+            "type": "http",
+            "scheme": "bearer",
+            "bearerFormat": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MDJmZjYwZjU1ZGViNDAwMTVmMWYzZmQiLCJpYXQiOjE2MTM3NTU5MTksImV4cCI6MTYxNDM2MDcxOX0.P - MPAAxgW_8bzLM2hkSWmQQ0DaevVEE - 36UZrocCTI4"
+        }
+    },
+    "schemas": {
+        "userRegister": {
+            "type": "object",
+            "required": ["email", "phone_number", "password"],
+            "properties": {
+                "username": { "type": "string", "example": "abdul" },
+                "email": { "type": "string", "example": "abdullahakinwumi@gmail.com" },
+                "phone_number": { "type": "string", "example": "09036058937" },
+                "password": { "type": "string", "example": "ghay28d7d7" }
+            }
+        }
+    },
+    "examples": {
+        "isExist": {
+            "status": "failed",
+            "field": "email",
+            "msg": "Email exists, please log in with google option"
+        },
+        "isInvalidData": {
+            "status": "failed",
+            "field": "username",
+            "msg": "\"username\" length must be at least 3 characters long"
+        }
+    }
+  },
+  "security": [{
+      "bearerAuth": []
+  }],
+  "paths":{
+      "/users/register":{
+          "post":{
+              "summary": "Register and get mailed token",
+              "security": [],
+              "requestBody": {
+                  "content": {
+                      "application/json":{
+                          "schema":{
+                              "$ref": "#/components/schemas/userRegister"
+                          }
+                      }
+                  }
+              },
+              "responses":{
+                  "400":{
+                      "description": "Reg failed, perhaps invalid or existing data",
+                      "content":{
+                          "application/json":{
+                              "examples":{
+                                  "isInvalidData":{
+                                      "$ref":"#/components/examples/isInvalidData"
+                                  },
+                                  "isExist":{
+                                      "$ref":"#/components/examples/isExist"
+                                  }
+                              }
+                          }
+                      }
+                  }
+              }
+          }
+      }
+  }
+}

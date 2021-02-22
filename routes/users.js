@@ -6,14 +6,6 @@ const sendMail = require("../config/nodemailer");
 const User = require("../models/user");
 const { validate, error400, encrypt, decrypt, checkUser, } = require("../controllers/userController");
 
-/**
- * @swagger
- * /users/me:
- *   get:
- *     summary: Retrieve logged in user
- *     security:
- *       - bearerAuth: []
-*/
 router.get(
   "/me",
   passport.authenticate("jwt", { session: false }),
@@ -21,14 +13,6 @@ router.get(
     res.send({ user: req.user.transformUserEntity() });
   }
 );
-
-/**
- * @swagger
- * /users/register:
- *   post:
- *     summary: Register and get mailed token
- *     security: []
-*/
 
 router.post("/register", async (req, res, next) => {
   const { username, email, phone_number, avatar, password } = req.body;
@@ -93,13 +77,6 @@ router.post("/register", async (req, res, next) => {
   res.send({ status: "success", userPayload, expiresIn: 5, unit: "m" });
 });
 
-/**
- * @swagger
- * /users/create:
- *   post:
- *     summary: Confirm token and create a new user
- *     security: []
-*/
 router.post("/create", async (req, res, next) => {
   const { userPayload, otp } = req.body;
   let payload = decrypt(userPayload);

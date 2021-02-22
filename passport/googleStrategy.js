@@ -14,7 +14,7 @@ module.exports = function () {
       },
       function (accessToken, refreshToken, profile, done) {
         if (!profile.id || !(profile.emails && profile.emails[0].value)) {
-          return done({ message: "Invalid User" }, false);
+          return done(null, false);
         }
 
         User.findOne({

@@ -1,24 +1,10 @@
 {
-  "openapi": "3.0.0",
+  "swagger": "2.0",
   "info": {
     "version": "1.0.0",
     "title": "REST API",
-    "description": "",
-    "license": {
-      "name": "Licensed Under MIT",
-      "url": "https://spdx.org/licenses/MIT.html"
-    },
-    "contact": {
-      "name": "JSONPlaceholder",
-      "url": "https://jsonplaceholder.typicode.com"
-    }
+    "description": ""
   },
-  "servers": [
-    {
-      "url": "http://localhost:3000",
-      "description": "Development server"
-    }
-  ],
   "host": "localhost:3000",
   "basePath": "/",
   "tags": [],
