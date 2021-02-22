@@ -10,15 +10,14 @@
   },
   "servers": [
       {
-          "url": "http://localhost:4000",
+          "url": "http://localhost:4000/api",
           "description": "Development server"
       },
       {
-          "url": "https://dartpa.herokuapp.com",
+          "url": "https://dartpa.herokuapp.com/api",
           "description": "Production server"
       }
   ],
-  "basePath": "/api",
   "components": {
     "securitySchemes": {
         "bearerAuth": {
@@ -36,7 +35,15 @@
                 "username": { "type": "string", "example": "abdul" },
                 "email": { "type": "string", "example": "abdullahakinwumi@gmail.com" },
                 "phone_number": { "type": "string", "example": "09036058937" },
-                "password": { "type": "string", "example": "ghay28d7d7" }
+                "password": { "type": "string", "example": "password" }
+            }
+        },
+        "userLogin": {
+            "type":"object",
+            "required":["email","password"],
+            "properties":{
+                "email":{"type":"string","example":"abdullahakinwumi@gmail.com"},
+                "password":{"type":"string","example":"password"}
             }
         },
         "confirmOtp":{
@@ -56,6 +63,14 @@
                 "field": {"type":"string", "example":"otp"},
                 "msg": {"type":"string", "example":"otp expired"}
             }
+        },
+        "authFailed":{
+           "type":"object",
+            "required":["msg"],
+            "properties":{
+                "field": {"type":"string", "example":"email"},
+                "msg": {"type":"string", "example":"use google option to sign in"}
+            } 
         }
     },
     "examples": {
@@ -134,11 +149,12 @@
                   }
               }
           }
-      },
+        },
       "/users/create":{
           "post":{
-              "summary": "Confirm token and create a new user",
+              "summary": "Confirm otp and create a new user",
               "tags":["user"],
+              "operationId": "confirmOtp",
               "security": [],
               "requestBody": {
                   "content": {
@@ -172,6 +188,65 @@
                   }
               }
             }
-        }
+        },
+      "/auth/login":{
+          "post":{
+              "summary": "Log in with email and password",
+              "tags":["auth"],
+              "security": [],
+              "requestBody": {
+                  "content": {
+                      "application/json":{
+                          "schema":{
+                              "$ref": "#/components/requestBodies/userLogin"
+                          }
+                      }
+                  }
+              },
+              "responses":{
+                  "400":{
+                      "content":{
+                      "application/json":{
+                        "schema":{
+                            "$ref":"#/components/responses/authFailed"
+                        }
+                      }
+                  }
+                  },
+                  "200":{
+                      "content":{
+                      "application/json":{
+                        "examples":{
+                            "userObject": {
+                                    "$ref":"#/components/examples/userObject"
+                                }
+                        }
+                      }
+                  }
+                  }
+              }
+            }
+        },
+      "/auth/google":{
+          "get":{
+              "summary": "Authenticate with google",
+              "tags":["auth"],
+              "security": [],
+              "responses":{
+                  "400":{
+                      "content":{
+                      "application/json":{
+                        "schema":{
+                            "$ref":"#/components/responses/authFailed"
+                        }
+                      }
+                  }
+                  },
+                  "302":{
+                      "description": "Redirect user to client login page but with jwt token as query string e.g ourwebsite.com?token=ajhdy8dh8a8 || Simply check if a token comes with `/login` router then save it and redirect user to dashboard"
+                  }
+              }
+            }
+        }  
     }
 }
