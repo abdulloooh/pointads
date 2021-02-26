@@ -33,7 +33,9 @@ router.get(
     scope: ["profile", "email"],
   }),
   function ({ user }, res) {
-    return res.redirect(`${config.get("client")}?token=${user.generateJwtToken()}`)
+    const token = user.generateJwtToken()
+    console.log(token)
+    return res.redirect(`${config.get("client")}?token=${token}`)
     // return res.send({
     //   user: user.transformUserEntity(),
     //   token: user.generateJwtToken(),

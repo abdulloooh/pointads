@@ -26,7 +26,12 @@
             "bearerFormat": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MDJmZjYwZjU1ZGViNDAwMTVmMWYzZmQiLCJpYXQiOjE2MTM3NTU5MTksImV4cCI6MTYxNDM2MDcxOX0.P - MPAAxgW_8bzLM2hkSWmQQ0DaevVEE - 36UZrocCTI4"
         }
     },
-    "schemas": {},
+    "schemas": {
+         "unauthorized":{
+            "type":"string",
+            "example": "Unauthorized"
+        }
+    },
     "requestBodies":{
         "userRegister": {
             "type": "object",
@@ -52,6 +57,12 @@
                 "otp": {"type":"string", "example": "767287"},
                 "userPayload": {"type":"string", "example": "67d88c94301ecd43717e0db6e56b48d328a87a42e4c121110f1c64707692c0d3f27a104bdfba9e4ebf05e526a09a0fc7987"}
             }
+        },
+        "wallet": {
+            "type":"object",
+            "properties":{
+                "amount": {"type":"number", "example": 100}
+            }
         }
     },
     "responses":{
@@ -71,10 +82,6 @@
                 "field": {"type":"string", "example":"email"},
                 "msg": {"type":"string", "example":"use google option to sign in"}
             } 
-        },
-        "unauthorized":{
-            "type":"string",
-            "example": "Unauthorized"
         }
     },
     "examples": {
@@ -110,7 +117,11 @@
                 "wallet": 0
             },
             "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MDMzN2YzY2JiOTQxMDMzNGE1NDU5NTciLCJpYXQiOjE2MTM5ODc2NDQsImV4cCI6MTYxNDU5MjQ0NH0.R89xLQ1UFIAoOoBxoF2GKNCarTBNb74xZKtchtCraBc"
-            }
+        },
+        "paymentUrl":{
+            "status": "success",
+            "payment_link": "https://checkout-testing.herokuapp.com/v3/hosted/pay/5e285d8245e0741b922e"
+        }
         }
   },
   "security": [{
@@ -221,7 +232,7 @@
                       "content":{
                       "application/json":{
                         "schema":{
-                            "$ref":"#/components/responses/unauthorized"
+                            "$ref":"#/components/schemas/unauthorized"
                         }
                       }
                   }
@@ -284,6 +295,52 @@
                   },
                   "302":{
                       "description": "Redirect user to client login page but with jwt token as query string e.g ourwebsite.com?token=ajhdy8dh8a8 || Simply check if a token comes with `/login` router then save it and redirect user to dashboard"
+                  }
+              }
+            }
+        }, 
+      "/pay/fw":{
+          "get":{
+              "summary": "Wallet Deposit with Flutterwave, Redirect user to the payment link if status is success",
+              "tags":["wallet"],
+              "requestBody": {
+                  "content": {
+                      "application/json":{
+                          "schema":{
+                              "$ref": "#/components/requestBodies/wallet"
+                          }
+                      }
+                  }
+              },
+              "responses":{
+                  "200":{
+                      "content":{
+                      "application/json":{
+                        "examples":{
+                            "success":{
+                                "$ref":"#/components/examples/paymentUrl"
+                            }
+                        }
+                      }
+                  }
+                  },
+                  "400":{
+                      "content":{
+                      "application/json":{
+                        "schema":{
+                            "$ref":"#/components/responses/otpFailed"
+                        }
+                      }
+                  }
+                  },
+                  "500":{
+                      "content":{
+                      "application/json":{
+                        "schema":{
+                            "$ref":"#/components/responses/otpFailed"
+                        }
+                      }
+                  }
                   }
               }
             }
