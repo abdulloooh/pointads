@@ -294,7 +294,7 @@
                   }
                   },
                   "302":{
-                      "description": "Redirect user to client login page but with jwt token as query string e.g ourwebsite.com?token=ajhdy8dh8a8 || Simply check if a token comes with `/login` router then save it and redirect user to dashboard"
+                      "description": "Redirect user to client but with jwt token as query string e.g https://ourwebsite.com/?token=ajhdy8dh8a8# || Simply check if a token comes on `/` router, strip the ending `#`, save it and handle the rest"
                   }
               }
             }
