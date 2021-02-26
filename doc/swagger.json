@@ -300,7 +300,7 @@
             }
         }, 
       "/pay/fw":{
-          "get":{
+          "post":{
               "summary": "Wallet Deposit with Flutterwave, Redirect user to the payment link if status is success",
               "tags":["wallet"],
               "requestBody": {
