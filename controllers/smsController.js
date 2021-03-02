@@ -7,6 +7,8 @@ const { URLSearchParams } = require('url');
 const fetch = require('node-fetch');
 const { reject } = require("lodash");
 
+const sendMail = require("../config/nodemailer");
+
 /**
  * Sender: 11 characters or less
  * to: string[]
@@ -61,7 +63,8 @@ function sendSMS(
         routing = '2',
         ref_id
     }) {
-    to = to.map(each => each.trim()).join(",")
+
+    if (typeof to !== "string") throw new Error()
 
     const encodedParams = new URLSearchParams({
         sender, to, message, type, routing, ref_id, token: config.get("SMARTSMS_TOKEN")
@@ -86,11 +89,32 @@ function sendSMS(
     })
 }
 
+async function failEmail({ user, resp }) {
+    return await sendMail(
+        `${config.get("mailFrom")},abdullahakinwumi@gmail.com`,
+        "An Ad failed",
+        `
+                   <p>
+                    An Advert placed just failed, possible cause: ${resp.code === "1001" ? "Error Sending SMS" :
+            resp.code === "1003" ? "Insufficient Balance on our SmartSMS account" :
+                resp.code === "1005" ? "SmartSMS temporarily down" :
+                    resp.code === "1008" ? "Unregistered Sender ID" :
+                        resp.comment
+
+        }   
+                   </p >
+                   <p>Ad initialized by user "${user.username}"</p>
+                   <p>Full raw details : ${JSON.stringify(resp)}</p>
+            `
+    );
+}
+
 
 module.exports = {
     formatNumber,
     formatNumbers,
-    sendSMS
+    sendSMS,
+    failEmail
 }
 
 // api@smartsmssolotions.com 

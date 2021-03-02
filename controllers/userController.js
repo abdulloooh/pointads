@@ -3,6 +3,7 @@ const Joi = require("@hapi/joi");
 const jwt = require("jsonwebtoken");
 const config = require("config");
 const crypto = require("crypto");
+const User = require("../models/user")
 // Difining algorithm
 const algorithm = "aes-256-cbc";
 
@@ -105,6 +106,23 @@ function filterUsers(filterData) {
     return filterQuery
 }
 
+function increaseWallet(id, amount) {
+    return new Promise(async (resolve, reject) => {
+        const done = await User.findByIdAndUpdate(id, { $inc: { wallet: +amount } })
+        if (done) resolve(true)
+        else reject(false)
+    })
+}
+
+
+function decreaseWallet(id, amount) {
+    return new Promise(async (resolve, reject) => {
+        const done = await User.findByIdAndUpdate(id, { $inc: { wallet: -amount } })
+        if (done) resolve(true)
+        else reject(false)
+    })
+}
+
 module.exports = {
     validate,
     // validateLogin,
@@ -112,6 +130,7 @@ module.exports = {
     encrypt,
     decrypt,
     checkUser,
-    filterUsers
-
+    filterUsers,
+    increaseWallet,
+    decreaseWallet
 };
