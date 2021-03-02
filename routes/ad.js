@@ -21,14 +21,21 @@ const rate = 2.50 //2naira 5 kobo
 router.post("/filter", async (req, res) => {
     const { filter } = req.body
 
-    if (filter && Object.keys(filter).length > 0) {
-        const filteredUsers = await Target.find(filterUsers(filter))
-        res.send({ qty: filteredUsers.length })
-    }
+    let filtered;
 
-    else if (!filter) return res.send({ qty: (await Target.find()).length })
+    if (filter && Object.keys(filter).length > 0)
+        filtered = await Target.find(filterUsers(filter))
 
-    else return res.sendStatus(400)
+    else if (!filter) filtered = await Target.find()
+
+    if (!filtered || filtered.length < 1) return error400(res, {
+        status: "failed",
+        msg: "Details with specified filter not found"
+    })
+
+    res.send({
+        qty: formatNumbers(_.map(filtered, 'phone')).length
+    })
 })
 
 router.post("/sendsms", async (req, res) => {
