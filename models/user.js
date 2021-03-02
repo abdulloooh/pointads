@@ -36,7 +36,7 @@ const userSchema = new mongoose.Schema(
       maxlength: 255,
       required: "Please fill in an email",
     },
-    phone_number: {
+    phone: {
       type: String,
       minlength: 11,
       maxlength: 14,

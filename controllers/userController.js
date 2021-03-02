@@ -18,7 +18,7 @@ function validate(user) {
     const schema = Joi.object({
         username: Joi.string().min(3).max(30),
         email: Joi.string().email().required(),
-        phone_number: Joi.string().min(11).max(14).required(),
+        phone: Joi.string().min(11).max(14).required(),
         avatar: Joi.string(),
         password: Joi.string().min(3).max(255).required(),
     });
@@ -86,10 +86,10 @@ function checkUser(res, user, db_user) {
                 }`,
         });
 
-    if (user.phone_number === db_user.phone_number)
+    if (user.phone === db_user.phone)
         return error400(res, {
             status: "failed",
-            field: "phone_number",
+            field: "phone",
             msg: `Phone number exists${db_user.googleId ? ", please log in with google option" : ""
                 }`,
         });

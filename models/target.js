@@ -41,7 +41,7 @@ const targetSchema = new mongoose.Schema(
             lowercase: true,
             minlength: 5,
         },
-        phone_number: {
+        phone: {
             type: String,
             minlength: 10,
             maxlength: 14,

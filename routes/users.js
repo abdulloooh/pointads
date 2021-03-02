@@ -15,7 +15,7 @@ router.get(
 );
 
 router.post("/register", async (req, res, next) => {
-  const { username, email, phone_number, avatar, password } = req.body;
+  const { username, email, phone, avatar, password } = req.body;
   const { error } = validate(req.body);
   if (error)
     return res.status(400).send({
@@ -28,7 +28,7 @@ router.post("/register", async (req, res, next) => {
    * If username isn't sent in reg, checking if a user exists
    * might match with another user who had no username. more like ""==""
    */
-  const expectedIncoming = ["username", "email", "phone_number"];
+  const expectedIncoming = ["username", "email", "phone"];
   const searchArray = [];
   expectedIncoming.map((i) => {
     if (req.body[i]) searchArray.push({ [i]: req.body[i] });
@@ -41,7 +41,7 @@ router.post("/register", async (req, res, next) => {
   // USER EXISTS
   if (db_user) return checkUser(res, req.body, db_user);
 
-  if (username === password || phone_number === password)
+  if (username === password || phone === password)
     return error400(res, {
       status: "failed",
       field: "password",
@@ -54,7 +54,7 @@ router.post("/register", async (req, res, next) => {
     {
       username,
       email,
-      phone_number,
+      phone,
       password,
       signupToken,
       avatar,
@@ -90,7 +90,7 @@ router.post("/create", async (req, res, next) => {
   const {
     username,
     email,
-    phone_number,
+    phone,
     password,
     signupToken,
     avatar,
@@ -106,7 +106,7 @@ router.post("/create", async (req, res, next) => {
    * If username isn't sent in reg, checking if a user exists
    * might match with another user who had no username. more like ""==""
    */
-  const expectedIncoming = ["username", "email", "phone_number"];
+  const expectedIncoming = ["username", "email", "phone"];
   const searchArray = [];
   expectedIncoming.map((i) => {
     if (payload[i]) searchArray.push({ [i]: payload[i] });
@@ -120,7 +120,7 @@ router.post("/create", async (req, res, next) => {
   if (db_user) return checkUser(res, payload, db_user);
 
   const hashedPassword = await hash(password);
-  user = new User({ username, email, phone_number, password: hashedPassword });
+  user = new User({ username, email, phone, password: hashedPassword });
   user.avatar = avatar || user.dummyAvatar();
   user = await user.save();
   res.send({

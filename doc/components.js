@@ -9,11 +9,11 @@ module.exports = {
     schemas: {
         "userRegister": {
             type: "object",
-            required: ['email', 'phone_number', 'password'],
+            required: ['email', 'phone', 'password'],
             properties: {
                 username: { type: "string", example: "abdul" },
                 email: { type: "string", example: "abdullahakinwumi@gmail.com" },
-                phone_number: { type: "string", example: "09036058937" },
+                phone: { type: "string", example: "09036058937" },
                 password: { type: "string", example: "ghay28d7d7" }
             }
         }

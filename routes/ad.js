@@ -1,38 +1,45 @@
 const express = require("express");
 const router = express.Router();
+const _ = require("lodash")
 const Target = require("../models/target")
 const { filterUsers, error400 } = require("../controllers/userController")
-const { sendSMS } = require("../controllers/smsController")
+const { formatNumbers, sendSMS } = require("../controllers/smsController")
 
 
-router.post("/place_ad", async (req, res) => {
+router.post("/filter", async (req, res) => {
     const { filter } = req.body
 
     if (filter && Object.keys(filter).length > 0) {
         const filteredUsers = await Target.find(filterUsers(filter))
-        res.send(filteredUsers)
+        res.send({ qty: filteredUsers.length })
     }
 
-    else if (!filter) return res.send(Target.find())
+    else if (!filter) return res.send({ qty: (await Target.find()).length })
 
     else return res.sendStatus(400)
 })
 
-router.post("/send", async (req, res) => {
+router.post("/sendsms", async (req, res) => {
 
-    const { message, to } = req.body
+    const { message, filter } = req.body
+    let filtered;
 
-    /**
-     * VALIDATIONS
-     * 
-     * Check if 'phone numbers' is a string array and fix all to string
-     * Check message body
-     */
-    if (!to || to.length < 1) return error400(res, {
+    if (filter && Object.keys(filter).length > 0)
+        filtered = await Target.find(filterUsers(filter))
+
+    else if (!filter) filtered = await Target.find()
+
+    if (!filtered || filtered.length < 1) return error400(res, {
         status: "failed",
-        field: "phone_number",
-        msg: "Kidly supply recipient phone number"
+        msg: "Details with specified filter not found"
     })
+
+    // return res.send(_.map(filtered, "phone"))
+    let to = formatNumbers(_.map(filtered, 'phone'))
+    return res.send(to)
+
+    to = to.join(",")
+
 
     const resp = await sendSMS({
         ref_id: `${req.user._id}==${Date.now()}`,

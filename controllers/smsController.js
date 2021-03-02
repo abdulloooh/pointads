@@ -14,6 +14,43 @@ const { reject } = require("lodash");
  * ref_id
  */
 
+function formatNumber(number) {
+    const pattern = /^(234|\+234)/
+    const contains234 = pattern.test(number)
+    if (contains234) {
+        if (number.indexOf("+") === 0) number = number.replace("+", "")
+        number = number.replace("234", "0")
+    }
+    if (number.indexOf("0") !== 0) number = "0" + number
+    return number
+}
+
+function formatNumbers(numbers) {
+    const pattern = /^(234|\+234)/
+
+    numbers = numbers.map((number) => {
+
+        /**
+         * CLEAN DATA
+         * Trim both sides
+         * Trim preceding ' or "
+         */
+        number = number.trim()
+        if (number.indexOf("'") === 0) number = number.substring(1)
+        if (number.indexOf("\"") === 0) number = number.substring(1)
+
+        const contains234 = pattern.test(number)
+        if (contains234) {
+            if (number.indexOf("+") === 0) number = number.replace("+", "")
+            number = number.replace("234", "0")
+        }
+        if (number.indexOf("0") !== 0) number = "0" + number
+        return number.substring(0, 11)
+    })
+        .filter(number => number.length === 11)
+
+    return numbers
+}
 
 function sendSMS(
     {
@@ -51,6 +88,8 @@ function sendSMS(
 
 
 module.exports = {
+    formatNumber,
+    formatNumbers,
     sendSMS
 }
 
