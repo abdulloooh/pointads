@@ -60,7 +60,7 @@ router.post("/fw", passport.authenticate("jwt", { session: false }),
                 {
                     status: "failed",
                     field: "amount",
-                    message: "Payment server unavailable"
+                    msg: "Payment server unavailable"
                 })
         }
     })

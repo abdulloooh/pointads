@@ -95,7 +95,7 @@ async function failEmail({ user, resp }) {
         "An Ad failed",
         `
                    <p>
-                    An Advert placed just failed, possible cause: ${resp.code === "1001" ? "Error Sending SMS" :
+                    An Advert placed just failed, possible cause: ${resp.code === "1002" ? "Error Sending SMS" :
             resp.code === "1003" ? "Insufficient Balance on our SmartSMS account" :
                 resp.code === "1005" ? "SmartSMS temporarily down" :
                     resp.code === "1008" ? "Unregistered Sender ID" :

@@ -54,12 +54,18 @@ router.post("/sendsms", async (req, res) => {
     })
 
     let to = formatNumbers(_.map(filtered, 'phone'))
+    // to = ["2349012345678", "2348012345678"]
 
     try {
         const ref_id = `${req.user._id}zzz${Date.now()}`
         const wallet_before = req.user.wallet
         const expected_qty = to.length
         const expected_cost = expected_qty * rate
+
+        //CHECK WALLET BAL
+        if (req.user.wallet < expected_cost) return error400(res, {
+            msg: `Insufficient amount, minimum of #${expected_cost} is needed but you have #${Math.floor(req.user.wallet)} left, kindly deposit minimum of #${Math.ceil(expected_cost - req.user.wallet)} to complete this transaction`
+        })
 
         const charge_user = await decreaseWallet(req.user._id, expected_cost)
 
@@ -71,7 +77,11 @@ router.post("/sendsms", async (req, res) => {
                 user: req.user._id
             }).save()
 
-        if (!start || !charge_user) return res.status(500).send("Server Error, Please try again later")
+        if (!start || !charge_user)
+            return res.status(500).send({
+                status: "failed",
+                msg: "Server Error, Please try again later"
+            })
 
         const resp = await sendSMS({ ref_id, message, to: to.join(",") })
 
@@ -84,7 +94,7 @@ router.post("/sendsms", async (req, res) => {
             if (resp.successful) {
 
                 const totalFailed = respLen(resp.failed) + respLen(resp.invalid)
-                const refund = failed * rate
+                const refund = totalFailed * rate
                 if (refund > 0) await increaseWallet(req.user._id, refund)
 
                 const charged_cost = expected_cost - refund
@@ -103,12 +113,12 @@ router.post("/sendsms", async (req, res) => {
                     <p>Hi ${req.user.username} 🤩</p>
                     <p>You targeted adverts have been sent successfully 🕺🕺🕺</p>
                     <p>
-                    You have been able to reach out to ${res.successful.length} specific people
-                    with just ${charged_cost} 😉
+                    You have been able to reach out to ${respLen(resp.successful)} specific ${respLen(resp.successful) === 1 ? "person" : "people"}
+                    with just #${charged_cost} 😉
                     </p>
                     <p>Kindly visit your dashboard to check the full breakdown 👍</p>
                     <p>Have a wonderful time ${req.user.username}.</p>
-                    <p>With pleasure 🌹, <br/>Abdullah 🤗 from DartPointAds.</p>
+                    <p>With pleasure, <br/>Abdullah 🤗 from DartPointAds.</p>
                 `
                 );
 
@@ -149,7 +159,11 @@ router.post("/sendsms", async (req, res) => {
 
     }
     catch (err) {
-        return res.status(500).send("Server Error")
+        console.log(err)
+        return res.status(500).send({
+            status: "failed",
+            msg: "Unavailable, please try again later"
+        })
     }
 })
 
