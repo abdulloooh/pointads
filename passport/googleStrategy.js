@@ -30,8 +30,9 @@ module.exports = function () {
                   status: 400,
                   details: {
                     field: "email",
-                    msg: "Account exists, please sign in with email-password option."
-                  }
+                    msg:
+                      "Account exists, please sign in with email-password option.",
+                  },
                 },
                 false
               );
@@ -54,7 +55,6 @@ module.exports = function () {
     )
   );
 };
-
 
 // http://www.passportjs.org/docs/google/
 // https://developers.google.com/identity/protocols/oauth2/scopes#google-sign-in
