@@ -22,7 +22,7 @@ module.exports = {
         "isExist": {
             "status": "failed",
             "field": "email",
-            "msg": "Email exists, please log in with google option"
+            "msg": "Email exists, please sign in with google option"
         },
         "isInvalidData": {
             "status": "failed",

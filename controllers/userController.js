@@ -75,7 +75,7 @@ function checkUser(res, user, db_user) {
         return error400(res, {
             status: "failed",
             field: "username",
-            msg: `Username exists${db_user.googleId ? ", please log in with google option" : ""
+            msg: `Username exists${db_user.googleId ? ", please sign in with google option" : ""
                 }`,
         });
 
@@ -83,7 +83,7 @@ function checkUser(res, user, db_user) {
         return error400(res, {
             status: "failed",
             field: "email",
-            msg: `Email exists${db_user.googleId ? ", please log in with google option" : ""
+            msg: `Email exists${db_user.googleId ? ", please sign in with google option" : ""
                 }`,
         });
 
@@ -91,7 +91,7 @@ function checkUser(res, user, db_user) {
         return error400(res, {
             status: "failed",
             field: "phone",
-            msg: `Phone number exists${db_user.googleId ? ", please log in with google option" : ""
+            msg: `Phone number exists${db_user.googleId ? ", please sign in with google option" : ""
                 }`,
         });
 }

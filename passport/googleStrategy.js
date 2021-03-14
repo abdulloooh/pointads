@@ -30,7 +30,7 @@ module.exports = function () {
                   status: 400,
                   details: {
                     field: "email",
-                    msg: "Account exists, please log in with email-password option."
+                    msg: "Account exists, please sign in with email-password option."
                   }
                 },
                 false
