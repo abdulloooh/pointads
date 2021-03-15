@@ -62,6 +62,53 @@ router.post("/check_sender", (req, res) => {
     });
 });
 
+router.post("/register_sender", (req,res)=>{
+  const {sender} = req.body
+  let validSenders = config.get("VALID_SENDERS");
+  if (!Array.isArray(validSenders)) validSenders = JSON.parse(validSenders);
+
+  if (!sender || validSenders.indexOf(sender) !== -1)
+    return error400(res, {
+      success: false,
+      field: "sender",
+      msg:
+        "Sender already registered",
+    });
+    
+  else{
+    await sendMail(
+      `${config.get("mailFrom")},abdullahakinwumi@gmail.com`,
+      "Request to register senderID",
+      `
+      <p>Hey, ${req.user.username} from DartPointAds just requested to register 
+        this userID, ${sender}, kindly attend to it ASAP
+      </p>
+      `
+    );
+
+    await sendMail(
+      `${req.user.email}`,
+      "Request to register senderID",
+      `
+      <p>Hi ${req.user.username}, </p
+      <p>
+        Abdullah here from DartPointAds, you requested for the registration of
+        this senderID, ${sender}.
+      </p>
+      <p>
+      We are attending to it ASAP and you will be reached out to via this email
+      once it is completed, keep an eye out on our emails.
+      </p>
+      <p>
+        If you did not request for this, simple reply this email with 'CANCEL ID REG'.
+      </p>
+      <p>Best regards, <br/> Abdullah from DartPointAds.
+      </p>
+      `
+    );
+  }
+})
+
 router.post("/sendsms", async (req, res) => {
   const { sender, message, filter } = req.body;
   if (!message)
