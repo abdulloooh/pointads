@@ -74,13 +74,13 @@ router.post("/register_sender", (req,res)=>{
       msg:
         "Sender already registered",
     });
-    
+
   else{
     await sendMail(
       `${config.get("mailFrom")},abdullahakinwumi@gmail.com`,
       "Request to register senderID",
       `
-      <p>Hey, ${req.user.username} from DartPointAds just requested to register 
+      <p>Hey, ${req.user.username} from DartPointAds with email ${req.user.email} just requested to register 
         this userID, ${sender}, kindly attend to it ASAP
       </p>
       `
