@@ -17,10 +17,11 @@ const {
   formatNumbers,
   sendSMS,
   failEmail,
+  validateMessage,
 } = require("../controllers/smsController");
 
 const sendMail = require("../config/nodemailer");
-const rate = 2.5; //2naira 5 kobo
+let rate = +config.get(RATE);
 
 router.post("/filter", async (req, res) => {
   const { filter } = req.body;
@@ -57,16 +58,28 @@ router.post("/sendsms", async (req, res) => {
     filtered = await Target.find(filterUsers(filter));
   else if (!filter) filtered = await Target.find();
 
-  //   if (!filtered || filtered.length < 1)
-  //     return error400(res, {
-  //       status: "failed",
-  //       msg: "Details with specified filter not found",
-  //     });
+  if (!filtered || filtered.length < 1)
+    return error400(res, {
+      status: "failed",
+      msg: "Details with specified filter not found",
+    });
 
-  //   let to = formatNumbers(_.map(filtered, "phone"));
-  to = ["2349012345678", "2348012345678"];
+  let to = formatNumbers(_.map(filtered, "phone"));
+  // to = ["2349012345678", "2348012345678"];
 
   try {
+    //validate message
+    const isValid = validateMessage(message);
+    if (isValid.err)
+      return error400(res, {
+        status: "failed",
+        field: "messaage",
+        msg: isValid.errMsg,
+        message,
+      });
+
+    rate = rate * +isValid.pages;
+
     const ref_id = `${req.user._id}zzz${Date.now()}`;
     const wallet_before = req.user.wallet;
     const expected_qty = to.length;
@@ -102,7 +115,6 @@ router.post("/sendsms", async (req, res) => {
         status: "failed",
         msg: "Server Error, Please try again later",
       });
-    return res.send("lol");
 
     const resp = await sendSMS({ ref_id, message, to: to.join(",") });
 
@@ -130,19 +142,19 @@ router.post("/sendsms", async (req, res) => {
           req.user.email,
           "Ads sent successfully",
           `
-                    <p>Hi ${req.user.username} 🤩</p>
-                    <p>You targeted adverts have been sent successfully 🕺🕺🕺</p>
+                    <p>Hi ${req.user.username}</p>
+                    <p>You targeted adverts have been sent successfully</p>
                     <p>
                     You have been able to reach out to ${respLen(
                       resp.successful
                     )} specific ${
             respLen(resp.successful) === 1 ? "person" : "people"
           }
-                    with just #${charged_cost} 😉
+                    with just #${charged_cost} 
                     </p>
-                    <p>Kindly visit your dashboard to check the full breakdown 👍</p>
+                    <p>Kindly visit your dashboard to check the full breakdown </p>
                     <p>Have a wonderful time ${req.user.username}.</p>
-                    <p>With pleasure, <br/>Abdullah 🤗 from DartPointAds.</p>
+                    <p>With pleasure, <br/>Abdullah from DartPointAds.</p>
                 `
         );
 
