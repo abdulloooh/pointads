@@ -43,6 +43,25 @@ router.post("/filter", async (req, res) => {
   });
 });
 
+router.post("/check_sender", (req, res) => {
+  const { sender } = req.body;
+  let validSenders = config.get("VALID_SENDERS");
+  if (!Array.isArray(validSenders)) validSenders = JSON.parse(validSenders);
+
+  if (!sender || validSenders.indexOf(sender) < 0)
+    return error400(res, {
+      status: "failed",
+      field: "sender",
+      msg:
+        "Unregistered sender, please use default sender or request to register this sender ID",
+    });
+  else
+    return res.status(200).send({
+      status: "success",
+      sender,
+    });
+});
+
 router.post("/sendsms", async (req, res) => {
   const { sender, message, filter } = req.body;
   if (!message)
@@ -74,7 +93,7 @@ router.post("/sendsms", async (req, res) => {
       return error400(res, {
         status: "failed",
         field: "messaage",
-        msg: isValid.errMsg,
+        msg: isValid.err.msg,
         message,
       });
 
