@@ -4,7 +4,13 @@ const passport = require("passport");
 const { hash } = require("argon2");
 const sendMail = require("../config/nodemailer");
 const User = require("../models/user");
-const { validate, error400, encrypt, decrypt, checkUser, } = require("../controllers/userController");
+const {
+  validate,
+  error400,
+  encrypt,
+  decrypt,
+  checkUser,
+} = require("../controllers/userController");
 
 router.get(
   "/me",
@@ -79,6 +85,12 @@ router.post("/register", async (req, res, next) => {
 
 router.post("/create", async (req, res, next) => {
   const { userPayload, otp } = req.body;
+  if (!userPayload || !otp)
+    return error400(res, {
+      status: "failed",
+      field: "userPayload",
+      msg: "Invalid request",
+    });
   let payload = decrypt(userPayload);
   if (payload.status && payload.status === "failed")
     return error400(res, {
@@ -87,14 +99,7 @@ router.post("/create", async (req, res, next) => {
       msg: payload.msg,
     });
 
-  const {
-    username,
-    email,
-    phone,
-    password,
-    signupToken,
-    avatar,
-  } = payload;
+  const { username, email, phone, password, signupToken, avatar } = payload;
   if (signupToken.toString() !== otp.toString())
     return error400(res, {
       status: "failed",
@@ -130,4 +135,3 @@ router.post("/create", async (req, res, next) => {
 });
 
 module.exports = router;
-

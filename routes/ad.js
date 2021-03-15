@@ -44,20 +44,27 @@ router.post("/filter", async (req, res) => {
 
 router.post("/sendsms", async (req, res) => {
   const { message, filter } = req.body;
+  if (!message)
+    return error400(res, {
+      status: "failed",
+      filed: "message",
+      msg: "Message is empty",
+    });
+
   let filtered;
 
   if (filter && Object.keys(filter).length > 0)
     filtered = await Target.find(filterUsers(filter));
   else if (!filter) filtered = await Target.find();
 
-  if (!filtered || filtered.length < 1)
-    return error400(res, {
-      status: "failed",
-      msg: "Details with specified filter not found",
-    });
+  //   if (!filtered || filtered.length < 1)
+  //     return error400(res, {
+  //       status: "failed",
+  //       msg: "Details with specified filter not found",
+  //     });
 
-  let to = formatNumbers(_.map(filtered, "phone"));
-  // to = ["2349012345678", "2348012345678"]
+  //   let to = formatNumbers(_.map(filtered, "phone"));
+  to = ["2349012345678", "2348012345678"];
 
   try {
     const ref_id = `${req.user._id}zzz${Date.now()}`;
@@ -75,7 +82,13 @@ router.post("/sendsms", async (req, res) => {
         )} to complete this transaction`,
       });
 
-    const charge_user = decreaseWallet(res, req.user._id, expected_cost);
+    const charge_user = await decreaseWallet(res, req.user._id, expected_cost);
+    if (charge_user.problem)
+      return error400(res, {
+        status: "failed",
+        field: "wallet",
+        msg: "Insufficient amount",
+      });
 
     const start = await new Sms({
       ref_id,
@@ -84,11 +97,12 @@ router.post("/sendsms", async (req, res) => {
       user: req.user._id,
     }).save();
 
-    if (!start || !charge_user)
+    if (!start || !charge_user.success || charge_user.problem)
       return res.status(500).send({
         status: "failed",
         msg: "Server Error, Please try again later",
       });
+    return res.send("lol");
 
     const resp = await sendSMS({ ref_id, message, to: to.join(",") });
 

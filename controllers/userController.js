@@ -118,18 +118,18 @@ function increaseWallet(id, amount) {
 }
 
 async function decreaseWallet(res, id, amount) {
-  const done = await User.findByIdAndUpdate(id, {
-    $inc: { wallet: -amount },
-  });
+  const done = await User.findByIdAndUpdate(
+    id,
+    {
+      $inc: { wallet: -amount },
+    },
+    { new: true }
+  );
   if (done) {
     if (done.wallet < 0) {
-      return error400(res, {
-        status: "failed",
-        field: "wallet",
-        msg: "Insufficient amount",
-      });
-    } else return true;
-  } else return false;
+      return { problem: true };
+    } else return { success: true };
+  } else return { problem: true };
 }
 
 module.exports = {
