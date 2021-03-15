@@ -18,7 +18,7 @@ module.exports = function (to, subject, html, from, bcc, replyTo) {
       subject,
       html,
       bcc,
-      replyTo=from
+      replyTo: from,
     };
 
     mailTransporter.sendMail(mailDetails, function (err, data) {

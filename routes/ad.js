@@ -20,7 +20,7 @@ const {
   sendSMS,
   failEmail,
   validateMessage,
-  sendBroadcastEmails
+  sendBroadcastEmails,
 } = require("../controllers/adController");
 
 const sendMail = require("../config/nodemailer");
@@ -84,8 +84,8 @@ router.post("/check_sender", (req, res) => {
     });
 });
 
-router.post("/register_sender", (req,res)=>{
-  const {sender} = req.body
+router.post("/register_sender", async (req, res) => {
+  const { sender } = req.body;
   let validSenders = config.get("VALID_SENDERS");
   if (!Array.isArray(validSenders)) validSenders = JSON.parse(validSenders);
 
@@ -93,11 +93,9 @@ router.post("/register_sender", (req,res)=>{
     return error400(res, {
       success: false,
       field: "sender",
-      msg:
-        "Sender already registered",
+      msg: "Sender already registered",
     });
-
-  else{
+  else {
     await sendMail(
       `${config.get("mailFrom")},abdullahakinwumi@gmail.com`,
       "Request to register senderID",
@@ -129,7 +127,7 @@ router.post("/register_sender", (req,res)=>{
       `
     );
   }
-})
+});
 
 router.post("/sendsms", async (req, res) => {
   let rate = +config.get("SMS_RATE");
@@ -287,9 +285,9 @@ router.post("/sendsms", async (req, res) => {
   }
 });
 
-router.post("/sendemail", async(req,res)=>{
+router.post("/sendemail", async (req, res) => {
   let rate = +config.get("EMAIL_RATE");
-   const { subject,message, filter } = req.body;
+  const { subject, message, filter } = req.body;
   if (!message || !subject)
     return error400(res, {
       success: false,
@@ -317,7 +315,7 @@ router.post("/sendemail", async(req,res)=>{
     const expected_qty = to.length;
     const expected_cost = expected_qty * rate;
 
-  //   //CHECK WALLET BAL
+    //   //CHECK WALLET BAL
     if (req.user.wallet < expected_cost)
       return error400(res, {
         msg: `Insufficient amount, minimum of #${expected_cost} is needed but you have #${Math.floor(
@@ -348,11 +346,11 @@ router.post("/sendemail", async(req,res)=>{
         msg: "Server Error, Please try again later",
       });
 
-    const resp = await sendBroadcastEmails({req, to, message, subject})
-    console.log(resp)
+    const resp = await sendBroadcastEmails({ req, to, message, subject });
+    console.log(resp);
 
     await Sms.findByIdAndUpdate(start._id, {
-      sent_qty: expected_qty ,
+      sent_qty: expected_qty,
       charged_cost: expected_cost,
       status: "COMPLETED",
       meta: JSON.stringify(resp),
@@ -381,7 +379,7 @@ router.post("/sendemail", async(req,res)=>{
       successful: to.length,
       failed: 0,
       expected_cost,
-      charged_cost:expected_cost,
+      charged_cost: expected_cost,
       wallet_before,
       wallet_after: wallet_before - expected_cost,
       msg_id: start._id,
@@ -394,8 +392,7 @@ router.post("/sendemail", async(req,res)=>{
       msg: "Unavailable, please try again later",
     });
   }
-// });
-
-})
+  // });
+});
 
 module.exports = router;
