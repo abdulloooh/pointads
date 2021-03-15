@@ -54,6 +54,43 @@ function formatNumbers(numbers) {
   return numbers;
 }
 
+function deepClean(email) {
+  email = email.trim();
+
+  if (email.indexOf("'") === 0 || email.indexOf('"') === 0) {
+    email = email.substring(1);
+    email = deepClean(email);
+  }
+
+  if (
+    email.charAt(email.length - 1) === '"' ||
+    email.charAt(email.length - 1) === "'"
+  ) {
+    email = email.substring(0, email.length - 1);
+    email = deepClean(email);
+  }
+  return email;
+}
+
+const patt = /^[a-z]+[-\w]+(\.)?([-\w]+)?\w+@(\w(-)?){4,}\.{1}([a-z]{2,3}(\.[a-z]{2,3})?)$/gi;
+
+function isValidEmail(email) {
+  email = deepClean(email);
+  return patt.test(email);
+}
+
+/**
+ * CLEAN DATA,
+ * Trim both sides,
+ * Trim preceding ' or "
+ */
+function formatEMails(emails) {
+  emails = emails
+    .map((email) => deepClean(email))
+    .filter((email) => patt.test(email));
+  return emails;
+}
+
 function validateMessage(msg) {
   console.log(msg);
   const allowedChars = /[^\w\s\v\n*()@#&+-/?!,.;:"'%=$]/gi;
@@ -110,6 +147,16 @@ function sendSMS({ sender, message, to, type = "0", routing = "2", ref_id }) {
   });
 }
 
+async function sendBroadcastEmails({ req, to, message, subject }) {
+  return await sendMail(
+    to,
+    subject,
+    message,
+    req.user.email,
+    `${config.get("mailFrom")},"abdullahakinwumi@gmail.com"`
+  );
+}
+
 async function failEmail({ user, resp }) {
   return await sendMail(
     `${config.get("mailFrom")},abdullahakinwumi@gmail.com`,
@@ -137,7 +184,10 @@ async function failEmail({ user, resp }) {
 module.exports = {
   formatNumber,
   formatNumbers,
+  isValidEmail,
+  formatEMails,
   sendSMS,
+  sendBroadcastEmails,
   failEmail,
   validateMessage,
 };
