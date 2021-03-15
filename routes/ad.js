@@ -44,7 +44,7 @@ router.post("/filter", async (req, res) => {
 });
 
 router.post("/sendsms", async (req, res) => {
-  const { message, filter } = req.body;
+  const { sender, message, filter } = req.body;
   if (!message)
     return error400(res, {
       status: "failed",
@@ -116,7 +116,7 @@ router.post("/sendsms", async (req, res) => {
         msg: "Server Error, Please try again later",
       });
 
-    const resp = await sendSMS({ ref_id, message, to: to.join(",") });
+    const resp = await sendSMS({ sender, ref_id, message, to: to.join(",") });
 
     const respLen = (r) => {
       if (!r) return 0;
@@ -133,7 +133,7 @@ router.post("/sendsms", async (req, res) => {
 
         await Sms.findByIdAndUpdate(start._id, {
           sent_qty: expected_qty - totalFailed,
-          charged_cost: charged_cost,
+          charged_cost,
           status: "COMPLETED",
           meta: JSON.stringify(resp),
         });
@@ -142,17 +142,17 @@ router.post("/sendsms", async (req, res) => {
           req.user.email,
           "Ads sent successfully",
           `
-                    <p>Hi ${req.user.username}</p>
-                    <p>You targeted adverts have been sent successfully</p>
+                    <p>Hi ${req.user.username},</p>
+                    <p>Your targeted ads have been sent successfully</p>
                     <p>
                     You have been able to reach out to ${respLen(
                       resp.successful
                     )} specific ${
             respLen(resp.successful) === 1 ? "person" : "people"
           }
-                    with just #${charged_cost} 
+                    with just #${charged_cost}.
                     </p>
-                    <p>Kindly visit your dashboard to check the full breakdown </p>
+                    <p>Kindly visit your dashboard to check the full breakdown. </p>
                     <p>Have a wonderful time ${req.user.username}.</p>
                     <p>With pleasure, <br/>Abdullah from DartPointAds.</p>
                 `

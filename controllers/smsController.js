@@ -79,18 +79,10 @@ function validateMessage(msg) {
   };
 }
 
-function sendSMS({
-  sender = "DartPointAds",
-  message,
-  to,
-  type = "0",
-  routing = "2",
-  ref_id,
-}) {
+function sendSMS({ sender, message, to, type = "0", routing = "2", ref_id }) {
   if (typeof to !== "string") throw new Error();
 
   const encodedParams = new URLSearchParams({
-    sender,
     to,
     message,
     type,
@@ -99,7 +91,7 @@ function sendSMS({
     token: config.get("SMARTSMS_TOKEN"),
   });
 
-  // encodedParams.set('token', config.get("SMARTSMS_TOKEN"));
+  if (sender) encodedParams.set("sender", sender);
   console.log(encodedParams.toString());
 
   const url = "https://smartsmssolutions.com/api/json.php";
