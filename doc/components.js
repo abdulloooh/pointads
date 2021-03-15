@@ -21,12 +21,12 @@ module.exports = {
   },
   examples: {
     isExist: {
-      status: "failed",
+      success: false,
       field: "email",
       msg: "Email exists, please sign in with google option",
     },
     isInvalidData: {
-      status: "failed",
+      success: false,
       field: "username",
       msg: '"username" length must be at least 3 characters long',
     },

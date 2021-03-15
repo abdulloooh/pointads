@@ -25,7 +25,7 @@ router.post("/register", async (req, res, next) => {
   const { error } = validate(req.body);
   if (error)
     return res.status(400).send({
-      status: "failed",
+      success: false,
       field: error.details[0].path[0],
       msg: error.details[0].message,
     });
@@ -49,7 +49,7 @@ router.post("/register", async (req, res, next) => {
 
   if (username === password || phone === password)
     return error400(res, {
-      status: "failed",
+      success: false,
       field: "password",
       msg: "use a more secure password",
     });
@@ -80,21 +80,21 @@ router.post("/register", async (req, res, next) => {
   `
   );
 
-  res.send({ status: "success", userPayload, expiresIn: 5, unit: "m" });
+  res.send({ success: true, userPayload, expiresIn: 5, unit: "m" });
 });
 
 router.post("/create", async (req, res, next) => {
   const { userPayload, otp } = req.body;
   if (!userPayload || !otp)
     return error400(res, {
-      status: "failed",
+      success: false,
       field: "userPayload",
       msg: "Invalid request",
     });
   let payload = decrypt(userPayload);
   if (payload.status && payload.status === "failed")
     return error400(res, {
-      status: "failed",
+      success: false,
       field: "otp",
       msg: payload.msg,
     });
@@ -102,7 +102,7 @@ router.post("/create", async (req, res, next) => {
   const { username, email, phone, password, signupToken, avatar } = payload;
   if (signupToken.toString() !== otp.toString())
     return error400(res, {
-      status: "failed",
+      success: false,
       field: "otp",
       msg: "wrong token",
     });

@@ -62,7 +62,7 @@ function decrypt(encryptedData) {
     return decoded;
   } catch (ex) {
     return {
-      status: "failed",
+      success: false,
       msg: ex.message === "jwt expired" ? ex.message : "Invalid request",
     };
   }
@@ -71,7 +71,7 @@ function decrypt(encryptedData) {
 function checkUser(res, user, db_user) {
   if (user.username && user.username.toLowerCase() === db_user.username)
     return error400(res, {
-      status: "failed",
+      success: false,
       field: "username",
       msg: `Username exists${
         db_user.googleId ? ", please sign in with google option" : ""
@@ -80,7 +80,7 @@ function checkUser(res, user, db_user) {
 
   if (user.email === db_user.email)
     return error400(res, {
-      status: "failed",
+      success: false,
       field: "email",
       msg: `Email exists${
         db_user.googleId ? ", please sign in with google option" : ""
@@ -89,7 +89,7 @@ function checkUser(res, user, db_user) {
 
   if (user.phone === db_user.phone)
     return error400(res, {
-      status: "failed",
+      success: false,
       field: "phone",
       msg: `Phone number exists${
         db_user.googleId ? ", please sign in with google option" : ""

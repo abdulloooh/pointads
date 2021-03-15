@@ -34,7 +34,7 @@ router.post("/filter", async (req, res) => {
 
   if (!filtered || filtered.length < 1)
     return error400(res, {
-      status: "failed",
+      success: false,
       msg: "Details with specified filter not found",
     });
 
@@ -50,14 +50,14 @@ router.post("/check_sender", (req, res) => {
 
   if (!sender || validSenders.indexOf(sender) < 0)
     return error400(res, {
-      status: "failed",
+      success: false,
       field: "sender",
       msg:
         "Unregistered sender, please use default sender or request to register this sender ID",
     });
   else
     return res.status(200).send({
-      status: "success",
+      success: true,
       sender,
     });
 });
@@ -66,7 +66,7 @@ router.post("/sendsms", async (req, res) => {
   const { sender, message, filter } = req.body;
   if (!message)
     return error400(res, {
-      status: "failed",
+      success: false,
       filed: "message",
       msg: "Message is empty",
     });
@@ -79,7 +79,7 @@ router.post("/sendsms", async (req, res) => {
 
   if (!filtered || filtered.length < 1)
     return error400(res, {
-      status: "failed",
+      success: false,
       msg: "Details with specified filter not found",
     });
 
@@ -91,7 +91,7 @@ router.post("/sendsms", async (req, res) => {
     const isValid = validateMessage(message);
     if (isValid.err)
       return error400(res, {
-        status: "failed",
+        success: false,
         field: "messaage",
         msg: isValid.err.msg,
         message,
@@ -117,7 +117,7 @@ router.post("/sendsms", async (req, res) => {
     const charge_user = await decreaseWallet(res, req.user._id, expected_cost);
     if (charge_user.problem)
       return error400(res, {
-        status: "failed",
+        success: false,
         field: "wallet",
         msg: "Insufficient amount",
       });
@@ -131,7 +131,7 @@ router.post("/sendsms", async (req, res) => {
 
     if (!start || !charge_user.success || charge_user.problem)
       return res.status(500).send({
-        status: "failed",
+        success: false,
         msg: "Server Error, Please try again later",
       });
 
@@ -178,7 +178,7 @@ router.post("/sendsms", async (req, res) => {
         );
 
         return res.send({
-          status: "success",
+          success: true,
           successful: respLen(resp.successful),
           failed: totalFailed,
           expected_cost,
@@ -196,21 +196,21 @@ router.post("/sendsms", async (req, res) => {
       if (refund > 0) await increaseWallet(req.user._id, refund);
 
       await Sms.findByIdAndUpdate(start._id, {
-        status: "FAILED",
+        success: false,
         meta: JSON.stringify(resp),
       });
 
       await failEmail({ user: req.user, resp });
 
       return res.status(500).send({
-        status: "failed",
+        success: false,
         msg: "Unavailable, please try again later",
       });
     }
   } catch (err) {
     console.log(err);
     return res.status(500).send({
-      status: "failed",
+      success: false,
       msg: "Unavailable, please try again later",
     });
   }
