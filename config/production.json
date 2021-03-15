@@ -15,5 +15,8 @@
   "FW_PUBLIC_KEY": "",
   "FW_SECRET_KEY": "",
   "FW_ENC_KEY": "",
-  "FW_HASH": ""
+  "FW_HASH": "",
+  "SMS_RATE": "",
+  "EMAIL_RATE": "",
+  "VALID_SENDERS": ""
 }
