@@ -68,8 +68,16 @@ router.post(
 );
 
 router.post("/fw_webhook", async (req, res) => {
-  if (!req.headers["verif-hash"]) return res.end();
-  if (req.headers["verif-hash"] !== config.get("FW_HASH")) return res.end();
+  console.log(JSON.stringify(req.body));
+
+  if (
+    !req.headers["verif-hash"] ||
+    (req.headers["verif-hash"] &&
+      req.headers["verif-hash"] !== config.get("FW_HASH"))
+  ) {
+    console.log("attacker");
+    return res.end();
+  }
 
   if (req.body.event === "charge.completed") {
     const { data } = req.body;
@@ -83,25 +91,22 @@ router.post("/fw_webhook", async (req, res) => {
     if (trx && data.status === "successful") {
       await user.findByIdAndUpdate(customerID, {
         $inc: { wallet: Number(amount) },
+        status: "COMPLETED",
+        meta: JSON.stringify(data),
       });
-
-      trx.status = "COMPLETED";
-      trx.meta = JSON.stringify(data);
-
-      await transaction.findByIdAndUpdate(trx._id, {
-        $set: trx,
-      });
-      res.sendStatus(200);
+      console.log("wallet updated successfully");
     } else {
-      trx.status = "FAILED";
-      trx.meta = JSON.stringify(data);
-
       await transaction.findByIdAndUpdate(trx._id, {
-        $set: trx,
+        status: "FAILED",
+        meta: JSON.stringify(data),
       });
-      res.sendStatus(200);
+      console.log("wallet update failed");
     }
+    res.sendStatus(200);
   }
+
+  console.log("abnormal situation with wallet update");
+  return res.end();
 });
 
 module.exports = router;
