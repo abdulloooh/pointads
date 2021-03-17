@@ -2,6 +2,14 @@ const config = require("config");
 const passport = require("passport");
 const User = require("../models/user");
 
+const unauthorized = {
+  status: 401,
+  details: {
+    success: false,
+    msg: "Session expired, Please sign in again",
+  },
+};
+
 module.exports = function () {
   const JwtStrategy = require("passport-jwt").Strategy,
     ExtractJwt = require("passport-jwt").ExtractJwt;
@@ -18,10 +26,10 @@ module.exports = function () {
           return done(err, false);
         }
         if (user) {
-          console.log("Authenticated via JWT: ", user.username)
+          console.log("Authenticated via JWT: ", user.username);
           return done(null, user);
         } else {
-          return done({ message: "Invalid user" }, false);
+          return done(unauthorized, false);
         }
       });
     })

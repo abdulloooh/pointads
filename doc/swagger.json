@@ -28,8 +28,25 @@
     },
     "schemas": {
       "unauthorized": {
-        "type": "string",
-        "example": "Unauthorized"
+        "summary": "If it failed with no token sent at all, Unauthorized is simple return else the object below",
+        "type": "object",
+        "properties": {
+          "success": { "type": "boolean", "example": false },
+          "msg": {
+            "type": "string",
+            "example": "Session expired, Please sign in again"
+          }
+        }
+      },
+      "internal error": {
+        "type": "object",
+        "properties": {
+          "success": { "type": "boolean", "example": false },
+          "msg": {
+            "type": "string",
+            "example": "Server temporarily unavailable, please try again later"
+          }
+        }
       }
     },
     "requestBodies": {
