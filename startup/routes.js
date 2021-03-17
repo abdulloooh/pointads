@@ -9,8 +9,8 @@ const passport = require("passport");
 const indexRouter = require("../routes/index");
 const userRouter = require("../routes/users");
 const authRouter = require("../routes/auth");
-const adRouter = require("../routes/ad")
-const payRouter = require("../routes/pay")
+const adRouter = require("../routes/ad");
+const payRouter = require("../routes/pay");
 
 module.exports = function (app) {
   app.use(logger("dev"));
@@ -23,8 +23,12 @@ module.exports = function (app) {
   app.use("/api", indexRouter);
   app.use("/api/users", userRouter);
   app.use("/api/auth", authRouter);
-  app.use("/api/ads", passport.authenticate("jwt", { session: false }), adRouter)
-  app.use("/api/pay", payRouter)
+  app.use("/api/pay", payRouter);
+  app.use(
+    "/api/ads",
+    passport.authenticate("jwt", { session: false }),
+    adRouter
+  );
 
   app.use(asyncError);
 };

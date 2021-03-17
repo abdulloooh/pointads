@@ -38,7 +38,7 @@
           }
         }
       },
-      "internal error": {
+      "internal_error": {
         "type": "object",
         "properties": {
           "success": { "type": "boolean", "example": false },
@@ -89,6 +89,24 @@
         "properties": {
           "amount": { "type": "number", "example": 100 }
         }
+      },
+      "filterReq": {
+        "type": "object",
+        "properties": {
+          "filter": {
+            "type": "object",
+            "properties": {
+              "religion": {
+                "type": "array",
+                "items": { "type": "string", "example": "Muslim" }
+              },
+              "department": {
+                "type": "array",
+                "items": { "type": "string", "example": "FST" }
+              }
+            }
+          }
+        }
       }
     },
     "responses": {
@@ -108,6 +126,16 @@
           "success": { "type": "boolean", "example": false },
           "field": { "type": "string", "example": "email" },
           "msg": { "type": "string", "example": "use google option to sign in" }
+        }
+      },
+      "filtererror": {
+        "type": "object",
+        "properties": {
+          "success": { "type": "boolean", "example": false },
+          "msg": {
+            "type": "string",
+            "example": "Details with specified filter not found"
+          }
         }
       }
     },
@@ -145,6 +173,10 @@
       "paymentUrl": {
         "success": true,
         "payment_link": "https://checkout-testing.herokuapp.com/v3/hosted/pay/5e285d8245e0741b922e"
+      },
+      "filterRes": {
+        "success": true,
+        "qty": 100
       }
     }
   },
@@ -364,6 +396,80 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/responses/otpFailed"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/ads/filterphone": {
+      "post": {
+        "summary": "Get qty of clean phone numbers corresponding to a filter. No filter implies fetch all, send filter only for needed, e.g if filtering is needed for  religion but not faculty, dont add faculty to filter keys at all",
+        "tags": ["filter"],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/requestBodies/filterReq"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "examples": {
+                  "success": {
+                    "$ref": "#/components/examples/filterRes"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/responses/filtererror"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/ads/filteremail": {
+      "post": {
+        "summary": "Get qty of clean email corresponding to a filter. No filter implies fetch all, send filter only for needed, e.g if filtering is needed for  religion but not faculty, dont add faculty to filter keys at all",
+        "tags": ["filter"],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/requestBodies/filterReq"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "examples": {
+                  "success": {
+                    "$ref": "#/components/examples/filterRes"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/responses/filtererror"
                 }
               }
             }

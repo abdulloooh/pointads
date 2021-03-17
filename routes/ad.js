@@ -41,6 +41,7 @@ router.post("/filterphone", async (req, res) => {
     });
 
   res.send({
+    success: true,
     qty: formatNumbers(_.map(filtered, "phone")).length,
   });
 });
@@ -61,6 +62,7 @@ router.post("/filteremail", async (req, res) => {
     });
 
   res.send({
+    success: true,
     qty: formatEMails(_.map(filtered, "email")).length,
   });
 });
