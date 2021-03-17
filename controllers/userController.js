@@ -59,7 +59,7 @@ function decrypt(encryptedData) {
 
   try {
     const decoded = jwt.verify(jwt_decrypt, config.get("jwt"));
-    return decoded;
+    return { success: true, payload: decoded };
   } catch (ex) {
     return {
       success: false,

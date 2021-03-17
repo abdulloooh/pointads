@@ -50,6 +50,7 @@ router.post(
         amount: fw_payload.amount,
         user: fw_payload.customer.id,
         status: "PENDING",
+        type: "DEPOSIT",
       }).save(() => {
         return res.send({
           success: true,

@@ -4,19 +4,12 @@ const jwt = require("jsonwebtoken");
 const config = require("config");
 const crypto = require("crypto");
 
-const public_fields = [
-  "username",
-  "email",
-  "avatar",
-  "wallet",
-  "token",
-];
+const public_fields = ["username", "email", "avatar", "wallet", "token"];
 
 const userSchema = new mongoose.Schema(
   {
     googleId: {
       type: String,
-      unique: true,
       index: true,
       trim: true,
     },

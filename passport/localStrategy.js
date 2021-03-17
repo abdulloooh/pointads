@@ -22,25 +22,28 @@ module.exports = function () {
               {
                 status: 400,
                 details: {
+                  success: false,
                   field: "email",
-                  msg: "Incorrect email or password."
-                }
+                  msg: "Incorrect email or password.",
+                },
               },
               false
             );
           }
 
           //user exists but through google
-          if (user.googleId) return done(
-            {
-              status: 400,
-              details: {
-                field: "email",
-                msg: "use google option to sign in"
-              }
-            },
-            false
-          )
+          if (user.googleId)
+            return done(
+              {
+                status: 400,
+                details: {
+                  success: false,
+                  field: "email",
+                  msg: "use google option to sign in",
+                },
+              },
+              false
+            );
 
           verify(user.password, password).then((valid) => {
             if (!valid)
@@ -48,9 +51,10 @@ module.exports = function () {
                 {
                   status: 400,
                   details: {
+                    success: false,
                     field: "email",
-                    msg: "Incorrect email or password."
-                  }
+                    msg: "Incorrect email or password.",
+                  },
                 },
                 false
               );

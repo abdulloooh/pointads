@@ -77,7 +77,7 @@
     "responses": {
       "otpFailed": {
         "type": "object",
-        "required": ["msg"],
+        "required": ["success", "msg"],
         "properties": {
           "success": { "type": "boolean", "example": false },
           "field": { "type": "string", "example": "otp" },
@@ -86,19 +86,15 @@
       },
       "authFailed": {
         "type": "object",
-        "required": ["msg"],
+        "required": ["success", "msg"],
         "properties": {
+          "success": { "type": "boolean", "example": false },
           "field": { "type": "string", "example": "email" },
           "msg": { "type": "string", "example": "use google option to sign in" }
         }
       }
     },
     "examples": {
-      "isExist": {
-        "success": false,
-        "field": "email",
-        "msg": "Email exists, please log in with google option"
-      },
       "isInvalidData": {
         "success": false,
         "field": "username",
@@ -111,6 +107,7 @@
         "unit": "m"
       },
       "userObject": {
+        "success": true,
         "user": {
           "username": "abdullah oladipo",
           "email": "abdulllooohhh@gmail.com",
@@ -119,6 +116,7 @@
         }
       },
       "userWithToken": {
+        "success": true,
         "user": {
           "username": "abdullah oladipo",
           "email": "abdulllooohhh@gmail.com",
@@ -163,7 +161,7 @@
                     "$ref": "#/components/examples/isInvalidData"
                   },
                   "isExist": {
-                    "$ref": "#/components/examples/isExist"
+                    "$ref": "#/components/examples/isInvalidData"
                   }
                 }
               }

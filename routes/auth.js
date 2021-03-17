@@ -8,6 +8,7 @@ router.post(
   passport.authenticate("local", { session: false }),
   ({ user }, res) => {
     return res.send({
+      success: true,
       user: user.transformUserEntity(),
       token: user.generateJwtToken(),
     });
@@ -33,7 +34,9 @@ router.get(
     scope: ["profile", "email"],
   }),
   function ({ user }, res) {
-    return res.redirect(`${config.get("client")}/?token=${user.generateJwtToken()}`)
+    return res.redirect(
+      `${config.get("client")}/?token=${user.generateJwtToken()}`
+    );
     // return res.send({
     //   user: user.transformUserEntity(),
     //   token: user.generateJwtToken(),
@@ -42,4 +45,3 @@ router.get(
 );
 
 module.exports = router;
-

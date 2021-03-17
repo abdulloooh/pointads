@@ -16,7 +16,7 @@ router.get(
   "/me",
   passport.authenticate("jwt", { session: false }),
   (req, res) => {
-    res.send({ user: req.user.transformUserEntity() });
+    res.send({ success: true, user: req.user.transformUserEntity() });
   }
 );
 
@@ -32,7 +32,7 @@ router.post("/register", async (req, res, next) => {
 
   /**
    * If username isn't sent in reg, checking if a user exists
-   * might match with another user who had no username. more like ""==""
+   * might match with another google user who had no username. more like ""==""
    */
   const expectedIncoming = ["username", "email", "phone"];
   const searchArray = [];
@@ -91,15 +91,15 @@ router.post("/create", async (req, res, next) => {
       field: "userPayload",
       msg: "Invalid request",
     });
-  let payload = decrypt(userPayload);
-  if (payload.status && payload.status === "failed")
+  let { success, payload, msg } = decrypt(userPayload);
+  if (!success)
     return error400(res, {
       success: false,
       field: "otp",
-      msg: payload.msg,
+      msg,
     });
 
-  const { username, email, phone, password, signupToken, avatar } = payload;
+  let { username, email, phone, password, signupToken, avatar } = payload;
   if (signupToken.toString() !== otp.toString())
     return error400(res, {
       success: false,
@@ -129,6 +129,7 @@ router.post("/create", async (req, res, next) => {
   user.avatar = avatar || user.dummyAvatar();
   user = await user.save();
   res.send({
+    success: true,
     user: user.transformUserEntity(),
     token: user.generateJwtToken(),
   });
