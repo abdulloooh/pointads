@@ -23,7 +23,7 @@ module.exports = function (to, subject, html, from, bcc, replyTo) {
 
     mailTransporter.sendMail(mailDetails, function (err, data) {
       if (err) {
-        console.log("Email failed to sent");
+        console.log("Email failed to sent", err);
         reject(false);
       } else {
         console.log("Email sent successfully");
