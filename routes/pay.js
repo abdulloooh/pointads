@@ -13,11 +13,11 @@ router.post(
   async (req, res) => {
     const { amount } = req.body;
 
-    if (isNaN(amount) || amount < 10)
+    if (isNaN(amount) || amount < 100)
       return error400(res, {
         success: false,
         field: "amount",
-        msg: "Deposit minimum of #10",
+        msg: "Deposit minimum of #100",
       });
 
     let fw_payload = {
@@ -102,7 +102,7 @@ router.post("/fw_webhook", async (req, res) => {
       });
       console.log("wallet update failed");
     }
-    res.sendStatus(200);
+    return res.sendStatus(200);
   }
 
   console.log("abnormal situation with wallet update");
