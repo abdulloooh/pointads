@@ -91,6 +91,11 @@ router.post("/fw_webhook", async (req, res) => {
       return res.sendStatus(200);
     }
 
+    if (trx.amount !== amount) {
+      console.log("attacker");
+      return res.end();
+    }
+
     if (trx && data.status === "successful") {
       await user.findByIdAndUpdate(customerID, {
         $inc: { wallet: Number(amount) },
