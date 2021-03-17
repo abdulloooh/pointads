@@ -86,19 +86,29 @@ router.post("/fw_webhook", async (req, res) => {
     const amount = data.amount;
 
     const trx = await transaction.findOne({ tx_ref: reference });
-    if (!trx || trx.status !== "PENDING") return res.sendStatus(200);
+    if (!trx || trx.status !== "PENDING") {
+      console.log("already completed");
+      return res.sendStatus(200);
+    }
 
     if (trx && data.status === "successful") {
       await user.findByIdAndUpdate(customerID, {
         $inc: { wallet: Number(amount) },
-        status: "COMPLETED",
-        meta: JSON.stringify(data),
       });
-      console.log("wallet updated successfully");
-    } else {
+
+      trx.status = "COMPLETED";
+      trx.meta = JSON.stringify(data);
+
       await transaction.findByIdAndUpdate(trx._id, {
-        status: "FAILED",
-        meta: JSON.stringify(data),
+        $set: trx,
+      });
+      console.log("wallet update successful");
+    } else {
+      trx.status = "FAILED";
+      trx.meta = JSON.stringify(data);
+
+      await transaction.findByIdAndUpdate(trx._id, {
+        $set: trx,
       });
       console.log("wallet update failed");
     }
