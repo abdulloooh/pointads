@@ -77,11 +77,12 @@ router.post("/check_sender", (req, res) => {
       success: false,
       field: "sender",
       msg:
-        "Unregistered sender, please use default sender or request to register this sender ID",
+        "Unregistered sender, please allow default sender for your ads or request to register this sender ID",
     });
   else
     return res.status(200).send({
       success: true,
+      msg: "senderID valid and registered",
       sender,
     });
 });
@@ -91,7 +92,14 @@ router.post("/register_sender", async (req, res) => {
   let validSenders = config.get("VALID_SENDERS");
   if (!Array.isArray(validSenders)) validSenders = JSON.parse(validSenders);
 
-  if (!sender || validSenders.indexOf(sender) !== -1)
+  if (!sender || sender.length > 11)
+    return error400(res, {
+      success: false,
+      field: "sender",
+      msg: "Maximum of 11 characters allowed by service provider for senderID",
+    });
+
+  if (validSenders.indexOf(sender) !== -1)
     return error400(res, {
       success: false,
       field: "sender",
@@ -102,8 +110,8 @@ router.post("/register_sender", async (req, res) => {
       `${config.get("mailFrom")},abdullahakinwumi@gmail.com`,
       "Request to register senderID",
       `
-      <p>Hey, ${req.user.username} from DartPointAds with email ${req.user.email} just requested to register 
-        this userID, ${sender}, kindly attend to it ASAP
+      <p>Hey Admin, ${req.user.username} from DartPointAds with email ${req.user.email} just requested to register 
+        this senderID <strong>${sender}</strong>, kindly attend to it ASAP
       </p>
       `
     );
@@ -115,19 +123,25 @@ router.post("/register_sender", async (req, res) => {
       <p>Hi ${req.user.username}, </p
       <p>
         Abdullah here from DartPointAds, you requested for the registration of
-        this senderID, ${sender}.
+        this senderID <strong>${sender}</strong>.
       </p>
       <p>
       We are attending to it ASAP and you will be reached out to via this email
       once it is completed, keep an eye out on our emails.
       </p>
       <p>
-        If you did not request for this, simple reply this email with 'CANCEL ID REG'.
+        If you did not request for this, simple reply this email with 'CANCEL ID REG' or ignore.
       </p>
       <p>Best regards, <br/> Abdullah from DartPointAds.
       </p>
       `
     );
+
+    return res.send({
+      success: true,
+      msg: "Sender queued for registration",
+      sender,
+    });
   }
 });
 

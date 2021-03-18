@@ -28,15 +28,8 @@
     },
     "schemas": {
       "unauthorized": {
-        "summary": "If it failed with no token sent at all, Unauthorized is simple return else the object below",
-        "type": "object",
-        "properties": {
-          "success": { "type": "boolean", "example": false },
-          "msg": {
-            "type": "string",
-            "example": "Session expired, Please sign in again"
-          }
-        }
+        "type": "string",
+        "example": "Unauthorized"
       },
       "internal_error": {
         "type": "object",
@@ -107,6 +100,12 @@
             }
           }
         }
+      },
+      "sender": {
+        "type": "object",
+        "properties": {
+          "sender": { "type": "string", "example": "DartPointAd" }
+        }
       }
     },
     "responses": {
@@ -117,6 +116,15 @@
           "success": { "type": "boolean", "example": false },
           "field": { "type": "string", "example": "otp" },
           "msg": { "type": "string", "example": "otp expired" }
+        }
+      },
+      "senderErr": {
+        "type": "object",
+        "required": ["success", "msg"],
+        "properties": {
+          "success": { "type": "boolean", "example": false },
+          "field": { "type": "string", "example": "sender" },
+          "msg": { "type": "string", "example": "Sender already registered" }
         }
       },
       "authFailed": {
@@ -136,6 +144,18 @@
             "type": "string",
             "example": "Details with specified filter not found"
           }
+        }
+      },
+      "senderRes": {
+        "type": "object",
+        "required": ["success", "sender"],
+        "properties": {
+          "success": { "type": "boolean", "example": true },
+          "msg": {
+            "type": "string",
+            "example": "Sender queued for registration"
+          },
+          "sender": { "type": "string", "example": "DartPointAd" }
         }
       }
     },
@@ -484,6 +504,76 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/responses/filtererror"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/ads/check_sender": {
+      "post": {
+        "summary": "Check if a senderID is registered, max of 11 chars",
+        "tags": ["senderID"],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/requestBodies/sender"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/responses/senderRes"
+                }
+              }
+            }
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/responses/senderErr"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/ads/register_sender": {
+      "post": {
+        "summary": "Check if a senderID is registered, max of 11 chars",
+        "tags": ["senderID"],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/requestBodies/sender"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/responses/senderRes"
+                }
+              }
+            }
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/responses/senderErr"
                 }
               }
             }
