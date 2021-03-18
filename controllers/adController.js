@@ -32,6 +32,7 @@ function formatNumbers(numbers) {
 
   numbers = numbers
     .map((number) => {
+      if (!number) return "";
       /**
        * CLEAN DATA
        * Trim both sides
@@ -72,11 +73,11 @@ function deepClean(email) {
   return email;
 }
 
-const patt = /^[a-z]+[-\w]+(\.)?([-\w]+)?\w+@(\w(-)?){4,}\.{1}([a-z]{2,3}(\.[a-z]{2,3})?)$/gi;
+const emailPattern = /^[a-z]+([-\w]+)?(\.)?([-\w]+)?\w+@(\w(-)?){4,}\.{1}([a-z]{2,3}(\.[a-z]{2,3})?)$/i;
 
 function isValidEmail(email) {
   email = deepClean(email);
-  return patt.test(email);
+  return emailPattern.test(email);
 }
 
 /**
@@ -87,7 +88,7 @@ function isValidEmail(email) {
 function formatEMails(emails) {
   emails = emails
     .map((email) => deepClean(email))
-    .filter((email) => patt.test(email));
+    .filter((email) => emailPattern.test(email));
   return emails;
 }
 

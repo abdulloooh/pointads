@@ -98,11 +98,11 @@
             "properties": {
               "religion": {
                 "type": "array",
-                "items": { "type": "string", "example": "Muslim" }
+                "items": { "type": "string" }
               },
               "department": {
                 "type": "array",
-                "items": { "type": "string", "example": "FST" }
+                "items": { "type": "string" }
               }
             }
           }
@@ -412,6 +412,13 @@
             "application/json": {
               "schema": {
                 "$ref": "#/components/requestBodies/filterReq"
+              },
+              "example": {
+                "filter": {
+                  "department": ["FST", "AEC"],
+                  "level": ["1"],
+                  "religion": ["Muslim"]
+                }
               }
             }
           }
@@ -449,6 +456,13 @@
             "application/json": {
               "schema": {
                 "$ref": "#/components/requestBodies/filterReq"
+              },
+              "example": {
+                "filter": {
+                  "department": ["FST", "AEC"],
+                  "level": ["1"],
+                  "religion": ["Muslim"]
+                }
               }
             }
           }
