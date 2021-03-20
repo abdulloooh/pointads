@@ -303,7 +303,7 @@ router.post("/sendsms", async (req, res) => {
 
 router.post("/sendemail", async (req, res) => {
   let rate = +config.get("EMAIL_RATE");
-  const { subject, message, filter } = req.body;
+  let { subject, message, filter } = req.body;
   if (!message || !subject)
     return error400(res, {
       success: false,
@@ -361,6 +361,13 @@ router.post("/sendemail", async (req, res) => {
         success: false,
         msg: "Server Error, Please try again later",
       });
+
+    message =
+      message +
+      `<br/><br/>This message is brought to you by DartPointAds. <br/> 
+      If you would like to place a target advert also or you simply want to report email abuse or be excluded from future adverts, 
+      please send a message to dartpointads@gmail.com.
+    `;
 
     const resp = await sendBroadcastEmails({ req, to, message, subject });
     console.log(resp);

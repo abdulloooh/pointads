@@ -43,6 +43,10 @@ const userSchema = new mongoose.Schema(
       type: Number,
       default: 0,
     },
+    restricted: {
+      type: Boolean,
+      default: false,
+    },
   },
   {
     timestamps: true,

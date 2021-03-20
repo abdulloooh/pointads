@@ -17,7 +17,7 @@ module.exports = function () {
         if (err) {
           return done(err, false);
         }
-        if (user) {
+        if (user && !user.restricted) {
           console.log("Authenticated via JWT: ", user.username);
           return done(null, user);
         } else {
