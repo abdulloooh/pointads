@@ -323,7 +323,8 @@ router.post("/sendemail", async (req, res) => {
       msg: "Details with specified filter not found",
     });
 
-  let to = formatEMails(_.map(filtered, "email"));
+  //2000 addr allowed in a single email, so 1999 plus company mail = 2k
+  let to = formatEMails(_.map(filtered, "email")).slice(0, 1999);
 
   try {
     const ref_id = `${req.user._id}zzz${Date.now()}`;

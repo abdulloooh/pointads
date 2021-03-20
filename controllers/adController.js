@@ -150,7 +150,7 @@ function sendSMS({ sender, message, to, type = "0", routing = "2", ref_id }) {
 
 async function sendBroadcastEmails({ req, to, message, subject }) {
   return await sendMail(
-    `${config.get("mailFrom")},"abdullahakinwumi@gmail.com"`,
+    `${config.get("mailFrom")}`,
     subject,
     message,
     req.user.email,
