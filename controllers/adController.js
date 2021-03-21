@@ -210,7 +210,7 @@ async function failEmail({ user, resp }) {
       `;
 
   return await sendMail({
-    to: `${config.get("mailFrom")},abdullahakinwumi@gmail.com`,
+    to: `${config.get("mailFrom")}`,
     subject: "An Ad needs attention",
     html,
   });
