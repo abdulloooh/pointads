@@ -139,7 +139,7 @@ function sendSMS({
   });
 
   if (sender) encodedParams.set("sender", sender);
-  console.log(encodedParams.toString());
+  // console.log(encodedParams.toString());
 
   const url = "https://smartsmssolutions.com/api/json.php";
 
