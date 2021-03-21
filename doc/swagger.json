@@ -104,7 +104,7 @@
       "sender": {
         "type": "object",
         "properties": {
-          "sender": { "type": "string", "example": "DartPointAd" }
+          "sender": { "type": "string", "max": 11, "example": "DartPointAd" }
         }
       },
       "sendemail": {
@@ -113,6 +113,15 @@
         "properties": {
           "message": { "type": "string" },
           "subject": { "type": "string" },
+          "filter": { "type": "object" }
+        }
+      },
+      "sendsms": {
+        "type": "object",
+        "required": ["message"],
+        "properties": {
+          "sender": { "type": "string", "max": 11 },
+          "message": { "type": "string" },
           "filter": { "type": "object" }
         }
       }
@@ -617,7 +626,7 @@
                 "message": "Just testing out this weird and short emails with nodemailer + gmail and seeing how it will turn out for dartpointads. woop! woop!",
                 "subject": "Hey Abdullah",
                 "filter": {
-                  "level": ["6"],
+                  "level": ["4", "6"],
                   "department": ["EEE"]
                 }
               }
@@ -652,20 +661,20 @@
     },
     "/ads/sendsms": {
       "post": {
-        "summary": "Send an advert sms",
+        "summary": "Send an advert sms with registered senderID or with default ID",
         "tags": ["ad"],
         "requestBody": {
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/requestBodies/sendemail"
+                "$ref": "#/components/requestBodies/sendsms"
               },
               "example": {
-                "message": "Just testing out this weird and short emails with nodemailer + gmail and seeing how it will turn out for dartpointads. woop! woop!",
-                "subject": "Hey Abdullah",
+                "sender": "Random Dude",
+                "message": "Just testing out this weird and short sms with *** and seeing how it will turn out for dartpointads. w@oop! woop!",
                 "filter": {
                   "level": ["6"],
-                  "department": ["EEE"]
+                  "department": ["EEE", "EEG"]
                 }
               }
             }
@@ -689,7 +698,8 @@
                 },
                 "example": {
                   "success": false,
-                  "msg": "Insufficient amount, minimum of #1.5 is needed but you have #0 left, kindly deposit minimum of #2 to complete this transaction"
+                  "field": "message",
+                  "msg": "~ ^ are not allowed in message content"
                 }
               }
             }

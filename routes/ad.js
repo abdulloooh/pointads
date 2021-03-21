@@ -176,9 +176,8 @@ router.post("/sendsms", async (req, res) => {
     if (isValid.err)
       return error400(res, {
         success: false,
-        field: "messaage",
+        field: "message",
         msg: isValid.err.msg,
-        message,
       });
 
     rate = rate * +isValid.pages;
@@ -273,7 +272,8 @@ router.post("/sendsms", async (req, res) => {
           msg_id: start._id,
         });
       } else {
-        //
+        console.log(JSON.stringify(resp));
+        return res.send("scheduled");
       }
     } else {
       const totalSuccessful = respLen(resp.successful);
