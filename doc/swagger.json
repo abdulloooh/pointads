@@ -181,11 +181,12 @@
         "properties": {
           "success": { "type": "boolean", "example": true },
           "successful": { "type": "number", "example": 2 },
-          "failed": { "type": "number", "example": 0 },
-          "expected_cost": { "type": "number", "example": 3 },
-          "charged_cost": { "type": "number", "example": 3 },
+          "failed": { "type": "number", "example": 2 },
+          "expected_cost": { "type": "number", "example": 10 },
+          "refund": { "type": "number", "example": 5 },
+          "charged_cost": { "type": "number", "example": 5 },
           "wallet_before": { "type": "number", "example": 82 },
-          "wallet_after": { "type": "number", "example": 79 },
+          "wallet_after": { "type": "number", "example": 77 },
           "msg_id": { "type": "string", "example": "6056bba2c665fe0eec73035c" }
         }
       }

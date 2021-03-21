@@ -270,6 +270,7 @@ router.post("/sendsms", async (req, res) => {
           charged_cost,
           wallet_before,
           wallet_after: wallet_before - charged_cost,
+          refund,
           msg_id: start._id,
         });
       } else {
@@ -298,10 +299,11 @@ router.post("/sendsms", async (req, res) => {
       await failEmail({ user: req.user, resp });
 
       return res.send({
-        success: false,
+        success: true,
         successful: totalSuccessful,
         failed: expected_qty - totalSuccessful,
         expected_cost,
+        refund,
         charged_cost,
         wallet_before,
         wallet_after: wallet_before - charged_cost,
