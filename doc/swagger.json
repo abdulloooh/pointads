@@ -106,6 +106,15 @@
         "properties": {
           "sender": { "type": "string", "example": "DartPointAd" }
         }
+      },
+      "sendemail": {
+        "type": "object",
+        "required": ["message", "subject"],
+        "properties": {
+          "message": { "type": "string" },
+          "subject": { "type": "string" },
+          "filter": { "type": "object" }
+        }
       }
     },
     "responses": {
@@ -156,6 +165,19 @@
             "example": "Sender queued for registration"
           },
           "sender": { "type": "string", "example": "DartPointAd" }
+        }
+      },
+      "adSent": {
+        "type": "object",
+        "properties": {
+          "success": { "type": "boolean", "example": true },
+          "successful": { "type": "number", "example": 2 },
+          "failed": { "type": "number", "example": 0 },
+          "expected_cost": { "type": "number", "example": 3 },
+          "charged_cost": { "type": "number", "example": 3 },
+          "wallet_before": { "type": "number", "example": 82 },
+          "wallet_after": { "type": "number", "example": 79 },
+          "msg_id": { "type": "string", "example": "6056bba2c665fe0eec73035c" }
         }
       }
     },
@@ -574,6 +596,53 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/responses/senderErr"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/ads/sendemail": {
+      "post": {
+        "summary": "Send an advert email, max of 2k addresses and must follow some standard to avoid delivery in spam",
+        "tags": ["ad"],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/requestBodies/sendemail"
+              },
+              "example": {
+                "message": "Just testing out this weird and short emails with nodemailer + gmail and seeing how it will turn out for dartpointads. woop! woop!",
+                "subject": "Hey Abdullah",
+                "filter": {
+                  "level": ["6"],
+                  "department": ["EEE"]
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/responses/adSent"
+                }
+              }
+            }
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/responses/senderErr"
+                },
+                "example": {
+                  "success": false,
+                  "msg": "Insufficient amount, minimum of #1.5 is needed but you have #0 left, kindly deposit minimum of #2 to complete this transaction"
                 }
               }
             }

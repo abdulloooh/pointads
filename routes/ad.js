@@ -152,7 +152,7 @@ router.post("/sendsms", async (req, res) => {
   if (!message)
     return error400(res, {
       success: false,
-      filed: "message",
+      field: "message",
       msg: "Message is empty",
     });
 
@@ -307,7 +307,7 @@ router.post("/sendemail", async (req, res) => {
   if (!message || !subject)
     return error400(res, {
       success: false,
-      filed: "message",
+      field: "message",
       msg: "Empty Message or Subject",
     });
 
