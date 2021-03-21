@@ -363,16 +363,17 @@ router.post("/sendemail", async (req, res) => {
         msg: "Server Error, Please try again later",
       });
 
+    const from = req.user.email;
+
     message =
       message +
-      `<br/><br/><address> This message is brought to you by <a href="${config.get(
+      `<br/><br/><hr/><address> This message is brought to you from ${from} via <a href="${config.get(
         "client"
-      )}">DartPointAds</a>, the easiest way to reach out to thousands of people. <br/> 
+      )}">Dart Point Ads</a>, the easiest way to reach out to thousands of people. <br/><br/> 
       To report email abuse, scam or be excluded from future email adverts,
       please send "CANCEL" to dartpointads@gmail.com. </address>
     `;
 
-    const from = req.user.email;
     const resp = await sendBroadcastEmails({ from, to, message, subject });
     console.log(resp);
 
