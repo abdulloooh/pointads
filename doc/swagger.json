@@ -649,6 +649,53 @@
           }
         }
       }
+    },
+    "/ads/sendsms": {
+      "post": {
+        "summary": "Send an advert sms",
+        "tags": ["ad"],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/requestBodies/sendemail"
+              },
+              "example": {
+                "message": "Just testing out this weird and short emails with nodemailer + gmail and seeing how it will turn out for dartpointads. woop! woop!",
+                "subject": "Hey Abdullah",
+                "filter": {
+                  "level": ["6"],
+                  "department": ["EEE"]
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/responses/adSent"
+                }
+              }
+            }
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/responses/senderErr"
+                },
+                "example": {
+                  "success": false,
+                  "msg": "Insufficient amount, minimum of #1.5 is needed but you have #0 left, kindly deposit minimum of #2 to complete this transaction"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   }
 }

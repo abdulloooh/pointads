@@ -118,11 +118,19 @@ function validateMessage(msg) {
   };
 }
 
-function sendSMS({ sender, message, to, type = "0", routing = "2", ref_id }) {
+function sendSMS({
+  sender = "New Message",
+  message,
+  to,
+  type = "0",
+  routing = "2",
+  ref_id,
+}) {
   if (typeof to !== "string") throw new Error();
 
   const encodedParams = new URLSearchParams({
     to,
+    sender,
     message,
     type,
     routing,

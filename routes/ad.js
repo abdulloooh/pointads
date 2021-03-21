@@ -169,7 +169,6 @@ router.post("/sendsms", async (req, res) => {
     });
 
   let to = formatNumbers(_.map(filtered, "phone"));
-  // to = ["2349012345678", "2348012345678"];
 
   try {
     //validate message
@@ -192,6 +191,7 @@ router.post("/sendsms", async (req, res) => {
     //CHECK WALLET BAL
     if (req.user.wallet < expected_cost)
       return error400(res, {
+        success: false,
         msg: `Insufficient amount, minimum of #${expected_cost} is needed but you have #${Math.floor(
           req.user.wallet
         )} left, kindly deposit minimum of #${Math.ceil(
