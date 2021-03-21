@@ -31,6 +31,7 @@ const adSchema = new mongoose.Schema(
       required: true,
       enum: ["SMS", "EMAIL"],
     },
+    message: String,
   },
   {
     timestamps: true,
