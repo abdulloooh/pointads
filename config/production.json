@@ -18,5 +18,6 @@
   "FW_HASH": "",
   "SMS_RATE": "",
   "EMAIL_RATE": "",
-  "VALID_SENDERS": ""
+  "VALID_SENDERS": "",
+  "SMARTSMS_TOKEN": ""
 }

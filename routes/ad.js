@@ -25,6 +25,9 @@ const {
 
 const sendMail = require("../config/nodemailer");
 
+let validSenders = config.get("VALID_SENDERS");
+if (!Array.isArray(validSenders)) validSenders = JSON.parse(validSenders);
+
 router.post("/filterphone", async (req, res) => {
   const { filter } = req.body;
 
@@ -69,8 +72,6 @@ router.post("/filteremail", async (req, res) => {
 
 router.post("/check_sender", (req, res) => {
   const { sender } = req.body;
-  let validSenders = config.get("VALID_SENDERS");
-  if (!Array.isArray(validSenders)) validSenders = JSON.parse(validSenders);
 
   if (!sender || validSenders.indexOf(sender) < 0)
     return error400(res, {
@@ -89,8 +90,6 @@ router.post("/check_sender", (req, res) => {
 
 router.post("/register_sender", async (req, res) => {
   const { sender } = req.body;
-  let validSenders = config.get("VALID_SENDERS");
-  if (!Array.isArray(validSenders)) validSenders = JSON.parse(validSenders);
 
   if (!sender || sender.length > 11)
     return error400(res, {
