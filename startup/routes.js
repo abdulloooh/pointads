@@ -11,6 +11,7 @@ const userRouter = require("../routes/users");
 const authRouter = require("../routes/auth");
 const adRouter = require("../routes/ad");
 const payRouter = require("../routes/pay");
+const smshookRouter = require("../routes/smshook");
 
 module.exports = function (app) {
   app.use(logger("dev"));
@@ -29,6 +30,7 @@ module.exports = function (app) {
     passport.authenticate("jwt", { session: false }),
     adRouter
   );
+  app.use("/api/smshook", smshookRouter);
 
   app.use(asyncError);
 };
