@@ -236,6 +236,8 @@ router.post("/sendsms", async (req, res) => {
         await Sms.findByIdAndUpdate(start._id, {
           sent_qty: expected_qty - totalFailed,
           charged_cost,
+          wallet_before,
+          wallet_after: wallet_before - charged_cost,
           status: "COMPLETED",
           meta: JSON.stringify(resp),
         });
@@ -272,23 +274,38 @@ router.post("/sendsms", async (req, res) => {
         });
       } else {
         console.log("main resp", JSON.stringify(resp));
-        return res.send("scheduled");
+        return res.send({
+          scheduled: true,
+          msg_id: start._id,
+        });
       }
     } else {
       const totalSuccessful = respLen(resp.successful);
       const refund = (expected_qty - totalSuccessful) * rate;
       if (refund > 0) await increaseWallet(req.user._id, refund);
 
+      const charged_cost = expected_cost - refund;
       await Sms.findByIdAndUpdate(start._id, {
-        success: false,
+        sent_qty: totalSuccessful,
+        charged_cost,
+        refund,
+        wallet_before,
+        wallet_after: wallet_before - charged_cost,
+        status: "COMPLETED",
         meta: JSON.stringify(resp),
       });
 
       await failEmail({ user: req.user, resp });
 
-      return res.status(500).send({
+      return res.send({
         success: false,
-        msg: "Unavailable, please try again later",
+        successful: totalSuccessful,
+        failed: expected_qty - totalSuccessful,
+        expected_cost,
+        charged_cost,
+        wallet_before,
+        wallet_after: wallet_before - charged_cost,
+        msg_id: start._id,
       });
     }
   } catch (err) {
