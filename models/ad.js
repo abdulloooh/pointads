@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-const smsSchema = new mongoose.Schema(
+const adSchema = new mongoose.Schema(
   {
     ref_id: {
       type: String,
@@ -32,4 +32,4 @@ const smsSchema = new mongoose.Schema(
   }
 );
 
-module.exports = mongoose.model("sms", smsSchema);
+module.exports = mongoose.model("ad", adSchema);

@@ -4,7 +4,7 @@ const _ = require("lodash");
 const config = require("config");
 
 const Target = require("../models/target");
-const Sms = require("../models/sms");
+const Ad = require("../models/ad");
 
 const {
   filterUsers,
@@ -205,7 +205,7 @@ router.post("/sendsms", async (req, res) => {
         msg: "Insufficient amount",
       });
 
-    const start = await new Sms({
+    const start = await new Ad({
       ref_id,
       expected_qty,
       expected_cost,
@@ -233,7 +233,7 @@ router.post("/sendsms", async (req, res) => {
 
         const charged_cost = expected_cost - refund;
 
-        await Sms.findByIdAndUpdate(start._id, {
+        await Ad.findByIdAndUpdate(start._id, {
           sent_qty: expected_qty - totalFailed,
           charged_cost,
           wallet_before,
@@ -288,7 +288,7 @@ router.post("/sendsms", async (req, res) => {
       if (refund > 0) await increaseWallet(req.user._id, refund);
 
       const charged_cost = expected_cost - refund;
-      await Sms.findByIdAndUpdate(start._id, {
+      await Ad.findByIdAndUpdate(start._id, {
         sent_qty: totalSuccessful,
         charged_cost,
         refund,
@@ -372,7 +372,7 @@ router.post("/sendemail", async (req, res) => {
         msg: "Insufficient amount",
       });
 
-    var start = await new Sms({
+    var start = await new Ad({
       ref_id,
       expected_qty,
       expected_cost,
@@ -401,7 +401,7 @@ router.post("/sendemail", async (req, res) => {
 
     if (!resp) throw new Error();
 
-    await Sms.findByIdAndUpdate(start._id, {
+    await Ad.findByIdAndUpdate(start._id, {
       sent_qty: expected_qty,
       charged_cost: expected_cost,
       wallet_before,
@@ -440,7 +440,7 @@ router.post("/sendemail", async (req, res) => {
   } catch (err) {
     console.error({ err });
 
-    await Sms.findByIdAndUpdate(start._id, {
+    await Ad.findByIdAndUpdate(start._id, {
       status: "FAILED",
     });
 
