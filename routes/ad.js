@@ -237,6 +237,7 @@ router.post("/sendsms", async (req, res) => {
         await Ad.findByIdAndUpdate(start._id, {
           sent_qty: expected_qty - totalFailed,
           charged_cost,
+          refund,
           wallet_before,
           wallet_after: wallet_before - charged_cost,
           status: "COMPLETED",

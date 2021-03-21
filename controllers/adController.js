@@ -173,19 +173,21 @@ async function failEmail({ user, resp }) {
     resp && resp.code
       ? ` <div>
             <p>
-              An Advert placed just failed, possible cause: $
-              {resp.code === "1002"
-                ? "Error Sending SMS"
-                : resp.code === "1003"
-                ? "Insufficient Balance on our SmartSMS account"
-                : resp.code === "1005"
-                ? "SmartSMS temporarily down"
-                : resp.code === "1008"
-                ? "Unregistered Sender ID"
-                : resp.comment}
+              An Advert placed just failed, possible cause: 
+              ${
+                resp.code === "1002"
+                  ? "Error Sending SMS"
+                  : resp.code === "1003"
+                  ? "Insufficient Balance on our SmartSMS account"
+                  : resp.code === "1005"
+                  ? "SmartSMS temporarily down"
+                  : resp.code === "1008"
+                  ? "Unregistered Sender ID"
+                  : resp.comment
+              }
             </p>
             <p>Ad initialized by user "${user.username}"</p>
-            <p>Full raw details : ${JSON.stringify(resp)}</p>{" "}
+            <p>Full raw details : ${JSON.stringify(resp)}</p>
           </div>
         `
       : resp && resp.scheduled
