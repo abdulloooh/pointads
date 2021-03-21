@@ -173,21 +173,32 @@ async function failEmail({ user, resp }) {
     to: `${config.get("mailFrom")},abdullahakinwumi@gmail.com`,
     subject: "An Ad failed",
     html: `
-                   <p>
-                    An Advert placed just failed, possible cause: ${
-                      resp.code === "1002"
-                        ? "Error Sending SMS"
-                        : resp.code === "1003"
-                        ? "Insufficient Balance on our SmartSMS account"
-                        : resp.code === "1005"
-                        ? "SmartSMS temporarily down"
-                        : resp.code === "1008"
-                        ? "Unregistered Sender ID"
-                        : resp.comment
-                    }   
-                   </p >
-                   <p>Ad initialized by user "${user.username}"</p>
-                   <p>Full raw details : ${JSON.stringify(resp)}</p>
+               ${
+                 resp && resp.code ? (
+                   <div>
+                     <p>
+                       An Advert placed just failed, possible cause: $
+                       {resp.code === "1002"
+                         ? "Error Sending SMS"
+                         : resp.code === "1003"
+                         ? "Insufficient Balance on our SmartSMS account"
+                         : resp.code === "1005"
+                         ? "SmartSMS temporarily down"
+                         : resp.code === "1008"
+                         ? "Unregistered Sender ID"
+                         : resp.comment}
+                     </p>
+                     <p>Ad initialized by user "${user.username}"</p>
+                     <p>Full raw details : ${JSON.stringify(resp)}</p>{" "}
+                   </div>
+                 ) : (
+                   <div>
+                     <p>An Advert placed just failed.</p>
+                     <p>Ad initialized by user "${user.username}"</p>
+                     <p>Full raw details : ${JSON.stringify(resp)}</p>
+                   </div>
+                 )
+               }
             `,
   });
 }

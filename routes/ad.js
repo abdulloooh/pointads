@@ -315,6 +315,7 @@ router.post("/sendsms", async (req, res) => {
     }
   } catch (err) {
     console.log(err);
+    await failEmail({ user: req.user, err });
     return res.status(500).send({
       success: false,
       msg: "Unavailable, please try again later",
@@ -347,12 +348,12 @@ router.post("/sendemail", async (req, res) => {
   //2000 addr allowed in a single email, so 1999 plus company mail = 2k
   let to = formatEMails(_.map(filtered, "email")).slice(0, 1999);
 
-  try {
-    const ref_id = `${req.user._id}zzz${Date.now()}`;
-    const wallet_before = req.user.wallet;
-    const expected_qty = to.length;
-    const expected_cost = expected_qty * rate;
+  const ref_id = `${req.user._id}zzz${Date.now()}`;
+  const wallet_before = req.user.wallet;
+  const expected_qty = to.length;
+  const expected_cost = expected_qty * rate;
 
+  try {
     //   //CHECK WALLET BAL
     if (req.user.wallet < expected_cost)
       return error400(res, {
@@ -398,9 +399,13 @@ router.post("/sendemail", async (req, res) => {
     const resp = await sendBroadcastEmails({ from, to, message, subject });
     console.log(resp);
 
+    if (!resp) throw new Error();
+
     await Sms.findByIdAndUpdate(start._id, {
       sent_qty: expected_qty,
       charged_cost: expected_cost,
+      wallet_before,
+      wallet_after: wallet_before - charged_cost,
       status: "COMPLETED",
       meta: JSON.stringify({ resp, from, to, message, subject }),
     });
@@ -433,10 +438,14 @@ router.post("/sendemail", async (req, res) => {
       msg_id: start._id,
     });
   } catch (err) {
-    console.error(err);
+    console.error({ err });
+
     await Sms.findByIdAndUpdate(start._id, {
       status: "FAILED",
     });
+
+    await failEmail({ user: req.user, err });
+
     return res.status(500).send({
       success: false,
       msg: "Unavailable, please try again later",

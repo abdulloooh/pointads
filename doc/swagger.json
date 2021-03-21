@@ -178,7 +178,7 @@
       },
       "adSent": {
         "type": "object",
-        "required": ["success", "scheduled", "msg_id"],
+        "required": ["success", "msg_id"],
         "properties": {
           "success": { "type": "boolean", "example": true },
           "scheduled": { "type": "boolean", "example": false },
