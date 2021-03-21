@@ -319,7 +319,7 @@ router.post("/sendsms", async (req, res) => {
     }
   } catch (err) {
     console.log(err);
-    await failEmail({ user: req.user, resp: err });
+    await failEmail({ user: req.user, resp: { ...err, ...start } });
     return res.status(500).send({
       success: false,
       msg: "Unavailable, please try again later",
@@ -448,7 +448,7 @@ router.post("/sendemail", async (req, res) => {
       status: "FAILED",
     });
 
-    await failEmail({ user: req.user, resp: err });
+    await failEmail({ user: req.user, resp: { ...err, ...start } });
 
     return res.status(500).send({
       success: false,
