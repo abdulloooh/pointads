@@ -264,6 +264,7 @@ router.post("/sendsms", async (req, res) => {
 
         return res.send({
           success: true,
+          scheduled: false,
           successful: respLen(resp.successful),
           failed: totalFailed,
           expected_cost,
@@ -276,6 +277,7 @@ router.post("/sendsms", async (req, res) => {
       } else {
         console.log("main resp", JSON.stringify(resp));
         return res.send({
+          success: true,
           scheduled: true,
           msg_id: start._id,
         });
@@ -300,6 +302,7 @@ router.post("/sendsms", async (req, res) => {
 
       return res.send({
         success: true,
+        scheduled: false,
         successful: totalSuccessful,
         failed: expected_qty - totalSuccessful,
         expected_cost,

@@ -178,8 +178,10 @@
       },
       "adSent": {
         "type": "object",
+        "required": ["success", "scheduled", "msg_id"],
         "properties": {
           "success": { "type": "boolean", "example": true },
+          "scheduled": { "type": "boolean", "example": false },
           "successful": { "type": "number", "example": 2 },
           "failed": { "type": "number", "example": 2 },
           "expected_cost": { "type": "number", "example": 10 },
