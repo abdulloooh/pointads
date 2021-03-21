@@ -130,7 +130,7 @@ router.post("/register_sender", async (req, res) => {
       once it is completed, keep an eye out on our emails.
       </p>
       <p>
-        If you did not request for this, simple reply this email with 'CANCEL ID REG' or ignore.
+        If you did not request for this, simply reply this email with 'CANCEL ID REG' or ignore.
       </p>
       <p>Best regards, <br/> Abdullah from DartPointAds.
       </p>
@@ -365,24 +365,22 @@ router.post("/sendemail", async (req, res) => {
 
     message =
       message +
-      `<br/><br/>This message is brought to you by DartPointAds. <br/> 
-      If you would like to place a target advert also or you simply want to report email abuse or be excluded from future adverts, 
-      please send a message to dartpointads@gmail.com.
+      `<br/><br/><address> This message is brought to you by <a href="${config.get(
+        "client"
+      )}">DartPointAds</a>, the easiest way to reach out to thousands of people. <br/> 
+      To report email abuse, scam or be excluded from future email adverts,
+      please send "CANCEL" to dartpointads@gmail.com. </address>
     `;
 
-    const resp = await sendBroadcastEmails({
-      from: req.user.email,
-      to,
-      message,
-      subject,
-    });
+    const from = req.user.email;
+    const resp = await sendBroadcastEmails({ from, to, message, subject });
     console.log(resp);
 
     await Sms.findByIdAndUpdate(start._id, {
       sent_qty: expected_qty,
       charged_cost: expected_cost,
       status: "COMPLETED",
-      meta: JSON.stringify(resp),
+      meta: JSON.stringify({ resp, from, to, message, subject }),
     });
 
     await sendMail({
@@ -393,8 +391,7 @@ router.post("/sendemail", async (req, res) => {
                 <p>Your targeted ads have been sent successfully</p>
                 <p>
                 You have been able to reach out to ${to.length} specific 
-                  ${to.length} === 1 ? "person" : "people"
-                }
+                  ${to.length === 1 ? "person" : "people"}
                 with just #${expected_cost}.
                 </p>
                 <p>Kindly visit your dashboard to check the full breakdown. </p>

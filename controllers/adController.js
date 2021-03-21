@@ -156,6 +156,7 @@ async function sendBroadcastEmails({ from, to, message, subject }) {
     html: message,
     from,
     bcc: to.join(","),
+    replyTo: from,
   });
 }
 
