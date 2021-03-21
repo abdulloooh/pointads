@@ -411,7 +411,7 @@ router.post("/sendemail", async (req, res) => {
       sent_qty: expected_qty,
       charged_cost: expected_cost,
       wallet_before,
-      wallet_after: wallet_before - charged_cost,
+      wallet_after: wallet_before - expected_cost,
       status: "COMPLETED",
       meta: JSON.stringify({ resp, from, to, message, subject }),
     });
