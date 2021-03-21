@@ -169,43 +169,43 @@ async function sendBroadcastEmails({ from, to, message, subject }) {
 }
 
 async function failEmail({ user, resp }) {
+  const html =
+    resp && resp.code
+      ? ` <div>
+            <p>
+              An Advert placed just failed, possible cause: $
+              {resp.code === "1002"
+                ? "Error Sending SMS"
+                : resp.code === "1003"
+                ? "Insufficient Balance on our SmartSMS account"
+                : resp.code === "1005"
+                ? "SmartSMS temporarily down"
+                : resp.code === "1008"
+                ? "Unregistered Sender ID"
+                : resp.comment}
+            </p>
+            <p>Ad initialized by user "${user.username}"</p>
+            <p>Full raw details : ${JSON.stringify(resp)}</p>{" "}
+          </div>
+        `
+      : resp && resp.scheduled
+      ? `<div>
+            <p>An Advert placed just got scheduled.</p>
+            <p>Ad initialized by user "${user.username}"</p>
+            <p>Full raw details : ${JSON.stringify(resp.details)}</p>
+          </div> 
+        `
+      : ` <div>
+            <p>An Advert placed just failed.</p>
+            <p>Ad initialized by user "${user.username}"</p>
+            <p>Full raw details : ${JSON.stringify(resp)}</p>
+          </div>
+      `;
+
   return await sendMail({
     to: `${config.get("mailFrom")},abdullahakinwumi@gmail.com`,
-    subject: "An Ad failed",
-    html: `
-               ${
-                 resp && resp.code ? (
-                   <div>
-                     <p>
-                       An Advert placed just failed, possible cause: $
-                       {resp.code === "1002"
-                         ? "Error Sending SMS"
-                         : resp.code === "1003"
-                         ? "Insufficient Balance on our SmartSMS account"
-                         : resp.code === "1005"
-                         ? "SmartSMS temporarily down"
-                         : resp.code === "1008"
-                         ? "Unregistered Sender ID"
-                         : resp.comment}
-                     </p>
-                     <p>Ad initialized by user "${user.username}"</p>
-                     <p>Full raw details : ${JSON.stringify(resp)}</p>{" "}
-                   </div>
-                 ) : resp && resp.scheduled ? (
-                   <div>
-                     <p>An Advert placed just got scheduled.</p>
-                     <p>Ad initialized by user "${user.username}"</p>
-                     <p>Full raw details : ${JSON.stringify(resp.details)}</p>
-                   </div>
-                 ) : (
-                   <div>
-                     <p>An Advert placed just failed.</p>
-                     <p>Ad initialized by user "${user.username}"</p>
-                     <p>Full raw details : ${JSON.stringify(resp)}</p>
-                   </div>
-                 )
-               }
-            `,
+    subject: "An Ad needs attention",
+    html,
   });
 }
 
