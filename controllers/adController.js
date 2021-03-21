@@ -191,6 +191,12 @@ async function failEmail({ user, resp }) {
                      <p>Ad initialized by user "${user.username}"</p>
                      <p>Full raw details : ${JSON.stringify(resp)}</p>{" "}
                    </div>
+                 ) : resp && resp.scheduled ? (
+                   <div>
+                     <p>An Advert placed just got scheduled.</p>
+                     <p>Ad initialized by user "${user.username}"</p>
+                     <p>Full raw details : ${JSON.stringify(resp.details)}</p>
+                   </div>
                  ) : (
                    <div>
                      <p>An Advert placed just failed.</p>
