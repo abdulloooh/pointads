@@ -13,7 +13,7 @@ module.exports = function ({ to, subject, html, from, bcc, replyTo }) {
     });
 
     let mailDetails = {
-      from: "abdulllooohhh@gmail.com",
+      from: from ? from : `"DartPointAds" <noreply@dartpointads.com>`,
       to,
       subject,
       html,
