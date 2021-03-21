@@ -210,6 +210,7 @@ router.post("/sendsms", async (req, res) => {
       expected_qty,
       expected_cost,
       user: req.user._id,
+      kind: "SMS",
     }).save();
 
     if (!start || !charge_user.success || charge_user.problem)
@@ -381,6 +382,7 @@ router.post("/sendemail", async (req, res) => {
       expected_qty,
       expected_cost,
       user: req.user._id,
+      kind: "EMAIL",
     }).save();
 
     if (!start || !charge_user.success || charge_user.problem)
