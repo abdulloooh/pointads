@@ -271,7 +271,7 @@ router.post("/sendsms", async (req, res) => {
           msg_id: start._id,
         });
       } else {
-        console.log(JSON.stringify(resp));
+        console.log("main resp", JSON.stringify(resp));
         return res.send("scheduled");
       }
     } else {
