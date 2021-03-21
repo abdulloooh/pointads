@@ -3,6 +3,7 @@ const router = express.Router();
 
 const { failEmail } = require("../controllers/adController");
 const User = require("../models/user");
+const Ad = require("../models/ad");
 
 router.post("/", (req, res) => {
   const { body: deliveries } = req.body;
@@ -18,10 +19,11 @@ router.post("/", (req, res) => {
    */
 
   deliveries.map(async (content) => {
-    const id = content.ref_id.split("zzz")[0];
-    const user = User.findById(id);
+    const ad = await Ad.findOne({ ref_id: content.ref_id }).populate("user");
+    if (ad.status !== "PENDING") return res.sendStatus(200);
+
     await failEmail({
-      user,
+      user: ad.user,
       resp: {
         schedule_update: true,
         details: content,
