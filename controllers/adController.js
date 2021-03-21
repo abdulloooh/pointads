@@ -56,6 +56,7 @@ function formatNumbers(numbers) {
 }
 
 function deepClean(email) {
+  if (!email) return "";
   email = email.trim();
 
   if (email.indexOf("'") === 0 || email.indexOf('"') === 0) {
@@ -148,21 +149,21 @@ function sendSMS({ sender, message, to, type = "0", routing = "2", ref_id }) {
   });
 }
 
-async function sendBroadcastEmails({ req, to, message, subject }) {
-  return await sendMail(
-    `${config.get("mailFrom")}`,
+async function sendBroadcastEmails({ from, to, message, subject }) {
+  return await sendMail({
+    to: `${config.get("mailFrom")}`,
     subject,
-    message,
-    req.user.email,
-    to
-  );
+    html: message,
+    from,
+    bcc: to.join(","),
+  });
 }
 
 async function failEmail({ user, resp }) {
-  return await sendMail(
-    `${config.get("mailFrom")},abdullahakinwumi@gmail.com`,
-    "An Ad failed",
-    `
+  return await sendMail({
+    to: `${config.get("mailFrom")},abdullahakinwumi@gmail.com`,
+    subject: "An Ad failed",
+    html: `
                    <p>
                     An Advert placed just failed, possible cause: ${
                       resp.code === "1002"
@@ -178,8 +179,8 @@ async function failEmail({ user, resp }) {
                    </p >
                    <p>Ad initialized by user "${user.username}"</p>
                    <p>Full raw details : ${JSON.stringify(resp)}</p>
-            `
-  );
+            `,
+  });
 }
 
 module.exports = {

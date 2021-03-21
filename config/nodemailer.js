@@ -2,7 +2,7 @@ const nodemailer = require("nodemailer");
 const config = require("config");
 const jwt = require("jsonwebtoken");
 
-module.exports = function (to, subject, html, from, bcc, replyTo) {
+module.exports = function ({ to, subject, html, from, bcc, replyTo }) {
   return new Promise((resolve, reject) => {
     let mailTransporter = nodemailer.createTransport({
       service: "gmail",
@@ -18,7 +18,7 @@ module.exports = function (to, subject, html, from, bcc, replyTo) {
       subject,
       html,
       bcc,
-      replyTo: from,
+      replyTo,
     };
 
     mailTransporter.sendMail(mailDetails, function (err, data) {

@@ -68,17 +68,17 @@ router.post("/register", async (req, res, next) => {
     "0.09h" // 5+ minutes
   );
 
-  await sendMail(
-    email,
-    "DartPointAds Registration",
-    `
+  await sendMail({
+    to: email,
+    subject: "DartPointAds Registration",
+    html: `
     <p>Hey there,</p>
     <p>Welcome to the DartPointAds tribe,You are just a step away from completing your sign up.</p>
     <p>Here is your signup OTP, it expires in 5 minutes and please do not share with anyone.</p>
     <p>${signupToken}</p>
     <p>With pleasure, <br/>Abdullah 🤗 from DartPointAds.</p>
-  `
-  );
+  `,
+  });
 
   res.send({ success: true, userPayload, expiresIn: 5, unit: "m" });
 });

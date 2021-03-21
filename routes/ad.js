@@ -106,20 +106,20 @@ router.post("/register_sender", async (req, res) => {
       msg: "Sender already registered",
     });
   else {
-    await sendMail(
-      `${config.get("mailFrom")},abdullahakinwumi@gmail.com`,
-      "Request to register senderID",
-      `
+    await sendMail({
+      to: `${config.get("mailFrom")},abdullahakinwumi@gmail.com`,
+      subject: "Request to register senderID",
+      html: `
       <p>Hey Admin, ${req.user.username} from DartPointAds with email ${req.user.email} just requested to register 
         this senderID <strong>${sender}</strong>, kindly attend to it ASAP
       </p>
-      `
-    );
+      `,
+    });
 
-    await sendMail(
-      `${req.user.email}`,
-      "Request to register senderID",
-      `
+    await sendMail({
+      to: `${req.user.email}`,
+      subject: "Request to register senderID",
+      html: `
       <p>Hi ${req.user.username}, </p
       <p>
         Abdullah here from DartPointAds, you requested for the registration of
@@ -134,8 +134,8 @@ router.post("/register_sender", async (req, res) => {
       </p>
       <p>Best regards, <br/> Abdullah from DartPointAds.
       </p>
-      `
-    );
+      `,
+    });
 
     return res.send({
       success: true,
@@ -242,10 +242,10 @@ router.post("/sendsms", async (req, res) => {
           meta: JSON.stringify(resp),
         });
 
-        await sendMail(
-          req.user.email,
-          "Ads sent successfully",
-          `
+        await sendMail({
+          to: req.user.email,
+          subject: "Ads sent successfully",
+          html: `
                     <p>Hi ${req.user.username},</p>
                     <p>Your targeted ads have been sent successfully</p>
                     <p>
@@ -259,8 +259,8 @@ router.post("/sendsms", async (req, res) => {
                     <p>Kindly visit your dashboard to check the full breakdown. </p>
                     <p>Have a wonderful time ${req.user.username}.</p>
                     <p>With pleasure, <br/>Abdullah from DartPointAds.</p>
-                `
-        );
+                `,
+        });
 
         return res.send({
           success: true,
@@ -335,6 +335,7 @@ router.post("/sendemail", async (req, res) => {
     //   //CHECK WALLET BAL
     if (req.user.wallet < expected_cost)
       return error400(res, {
+        success: false,
         msg: `Insufficient amount, minimum of #${expected_cost} is needed but you have #${Math.floor(
           req.user.wallet
         )} left, kindly deposit minimum of #${Math.ceil(
@@ -346,11 +347,10 @@ router.post("/sendemail", async (req, res) => {
     if (charge_user.problem)
       return error400(res, {
         success: false,
-        field: "wallet",
         msg: "Insufficient amount",
       });
 
-    const start = await new Sms({
+    var start = await new Sms({
       ref_id,
       expected_qty,
       expected_cost,
@@ -370,7 +370,12 @@ router.post("/sendemail", async (req, res) => {
       please send a message to dartpointads@gmail.com.
     `;
 
-    const resp = await sendBroadcastEmails({ req, to, message, subject });
+    const resp = await sendBroadcastEmails({
+      from: req.user.email,
+      to,
+      message,
+      subject,
+    });
     console.log(resp);
 
     await Sms.findByIdAndUpdate(start._id, {
@@ -380,10 +385,10 @@ router.post("/sendemail", async (req, res) => {
       meta: JSON.stringify(resp),
     });
 
-    await sendMail(
-      req.user.email,
-      "Ads sent successfully",
-      `
+    await sendMail({
+      to: req.user.email,
+      subject: "Ads sent successfully",
+      html: `
                 <p>Hi ${req.user.username},</p>
                 <p>Your targeted ads have been sent successfully</p>
                 <p>
@@ -395,8 +400,8 @@ router.post("/sendemail", async (req, res) => {
                 <p>Kindly visit your dashboard to check the full breakdown. </p>
                 <p>Have a wonderful time ${req.user.username}.</p>
                 <p>With pleasure, <br/>Abdullah from DartPointAds.</p>
-            `
-    );
+            `,
+    });
 
     return res.send({
       success: true,
@@ -410,7 +415,9 @@ router.post("/sendemail", async (req, res) => {
     });
   } catch (err) {
     console.error(err);
-    await increaseWallet(req.user._id, expected_cost);
+    await Sms.findByIdAndUpdate(start._id, {
+      status: "FAILED",
+    });
     return res.status(500).send({
       success: false,
       msg: "Unavailable, please try again later",
