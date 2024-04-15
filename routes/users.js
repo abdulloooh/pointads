@@ -70,13 +70,13 @@ router.post("/register", async (req, res, next) => {
 
   await sendMail({
     to: email,
-    subject: "DartPointAds Registration",
+    subject: "PointAds Registration",
     html: `
     <p>Hey there,</p>
-    <p>Welcome to the DartPointAds tribe,You are just a step away from completing your sign up.</p>
+    <p>Welcome to the PointAds tribe,You are just a step away from completing your sign up.</p>
     <p>Here is your signup OTP, it expires in 5 minutes and please do not share with anyone.</p>
     <p>${signupToken}</p>
-    <p>With pleasure, <br/>Abdullah 🤗 from DartPointAds.</p>
+    <p>With pleasure, <br/>Abdullah 🤗 from PointAds.</p>
   `,
   });
 

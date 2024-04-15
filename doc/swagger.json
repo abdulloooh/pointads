@@ -1,7 +1,7 @@
 {
   "openapi": "3.0.0",
   "info": {
-    "title": "DartPointAds API Documentation",
+    "title": "PointAds API Documentation",
     "version": "1.0.0",
     "contact": {
       "name": "Contact: Abdullah",
@@ -14,7 +14,7 @@
       "description": "Development server"
     },
     {
-      "url": "https://dartpa.herokuapp.com/api",
+      "url": "https://pa.herokuapp.com/api",
       "description": "Production server"
     }
   ],
@@ -50,9 +50,9 @@
           "username": { "type": "string", "example": "abdul" },
           "email": {
             "type": "string",
-            "example": "abdullahakinwumi@gmail.com"
+            "example": "abdulllooohhh@gmail.com"
           },
-          "phone": { "type": "string", "example": "09036058937" },
+          "phone": { "type": "string", "example": "1234567890" },
           "password": { "type": "string", "example": "password" }
         }
       },
@@ -62,7 +62,7 @@
         "properties": {
           "email": {
             "type": "string",
-            "example": "abdullahakinwumi@gmail.com"
+            "example": "abdulllooohhh@gmail.com"
           },
           "password": { "type": "string", "example": "password" }
         }
@@ -104,7 +104,7 @@
       "sender": {
         "type": "object",
         "properties": {
-          "sender": { "type": "string", "max": 11, "example": "DartPointAd" }
+          "sender": { "type": "string", "max": 11, "example": "PointAd" }
         }
       },
       "sendemail": {
@@ -173,7 +173,7 @@
             "type": "string",
             "example": "Sender queued for registration"
           },
-          "sender": { "type": "string", "example": "DartPointAd" }
+          "sender": { "type": "string", "example": "PointAd" }
         }
       },
       "adSent": {
@@ -626,7 +626,7 @@
                 "$ref": "#/components/requestBodies/sendemail"
               },
               "example": {
-                "message": "Just testing out this weird and short emails with nodemailer + gmail and seeing how it will turn out for dartpointads. woop! woop!",
+                "message": "Just testing out this weird and short emails with nodemailer + gmail and seeing how it will turn out for pointads. woop! woop!",
                 "subject": "Hey Abdullah",
                 "filter": {
                   "level": ["4", "6"],
@@ -674,7 +674,7 @@
               },
               "example": {
                 "sender": "Random Dude",
-                "message": "Just testing out this weird and short sms with *** and seeing how it will turn out for dartpointads. w@oop! woop!",
+                "message": "Just testing out this weird and short sms with *** and seeing how it will turn out for pointads. w@oop! woop!",
                 "filter": {
                   "level": ["6"],
                   "department": ["EEE", "EEG"]

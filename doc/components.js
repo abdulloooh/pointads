@@ -13,8 +13,8 @@ module.exports = {
       required: ["email", "phone", "password"],
       properties: {
         username: { type: "string", example: "abdul" },
-        email: { type: "string", example: "abdullahakinwumi@gmail.com" },
-        phone: { type: "string", example: "09036058937" },
+        email: { type: "string", example: "abdulllooohhh@gmail.com" },
+        phone: { type: "string", example: "123456789" },
         password: { type: "string", example: "ghay28d7d7" },
       },
     },

@@ -109,7 +109,7 @@ router.post("/register_sender", async (req, res) => {
       to: `${config.get("mailFrom")}`,
       subject: "Request to register senderID",
       html: `
-      <p>Hey Admin, ${req.user.username} from DartPointAds with email ${req.user.email} just requested to register 
+      <p>Hey Admin, ${req.user.username} from PointAds with email ${req.user.email} just requested to register
         this senderID <strong>${sender}</strong>, kindly attend to it ASAP
       </p>
       `,
@@ -121,7 +121,7 @@ router.post("/register_sender", async (req, res) => {
       html: `
       <p>Hi ${req.user.username}, </p
       <p>
-        Abdullah here from DartPointAds, you requested for the registration of
+        Abdullah here from PointAds, you requested for the registration of
         this senderID <strong>${sender}</strong>.
       </p>
       <p>
@@ -131,7 +131,7 @@ router.post("/register_sender", async (req, res) => {
       <p>
         If you did not request for this, simply reply this email with 'CANCEL ID REG' or ignore.
       </p>
-      <p>Best regards, <br/> Abdullah from DartPointAds.
+      <p>Best regards, <br/> Abdullah from PointAds.
       </p>
       `,
     });
@@ -261,7 +261,7 @@ router.post("/sendsms", async (req, res) => {
                     </p>
                     <p>Kindly visit your dashboard to check the full breakdown. </p>
                     <p>Have a wonderful time ${req.user.username}.</p>
-                    <p>With pleasure, <br/>Abdullah from DartPointAds.</p>
+                    <p>With pleasure, <br/>Abdullah from PointAds.</p>
                 `,
         });
 
@@ -400,9 +400,9 @@ router.post("/sendemail", async (req, res) => {
       message +
       `<br/><br/><hr/><address> This message is brought to you from ${from} via <a href="${config.get(
         "client"
-      )}">Dart Point Ads</a>, the easiest way to reach out to thousands of people. <br/><br/> 
+      )}">Point Ads</a>, the easiest way to reach out to thousands of people. <br/><br/>
       To report email abuse, scam or be excluded from future email adverts,
-      please send "CANCEL" to dartpointads@gmail.com. </address>
+      please send "CANCEL" to pointads@gmail.com. </address>
     `;
 
     const resp = await sendBroadcastEmails({ from, to, message, subject });
@@ -426,13 +426,13 @@ router.post("/sendemail", async (req, res) => {
                 <p>Hi ${req.user.username},</p>
                 <p>Your targeted ads have been sent successfully</p>
                 <p>
-                You have been able to reach out to ${to.length} specific 
+                You have been able to reach out to ${to.length} specific
                   ${to.length === 1 ? "person" : "people"}
                 with just #${expected_cost}.
                 </p>
                 <p>Kindly visit your dashboard to check the full breakdown. </p>
                 <p>Have a wonderful time ${req.user.username}.</p>
-                <p>With pleasure, <br/>Abdullah from DartPointAds.</p>
+                <p>With pleasure, <br/>Abdullah from PointAds.</p>
             `,
     });
 
